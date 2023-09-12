@@ -5,20 +5,49 @@ set -e
 
 #### Disclaimer ####
 echo "***********Disclaimer**********"
-echo ""
+echo
 echo "The existing PHP will be overwritten by the new PHP!"
-echo ""
-echo ""
+echo
+echo
 
-## install php (ondrje php)
+ask_php_version() {
+	echo "Install PHP"
+	echo
+	echo "1. PHP 8.2 (default)"
+	echo "2. PHP 8.1"
+	echo "3. PHP 8.0"
+	echo "4. PHP 7.4"
+	echo "5. PHP 7.2"
+	echo "Enter 'q' to quit."
+	echo
+	echo -en "Please select PHP Version: "
 
-### add ondrje ppa
-sudo apt-get install software-properties-common -y
-sudo add-apt-repository ppa:ondrej/php -y
-sudo apt update
+	read PHP_VERSION
+	return "$PHP_VERSION"
+}
 
-### install php8.2
-sudo apt install -y php8.2
+# validate php version input
+validate_php_version() {
+	local input="$1"
+	# Define a regular expression pattern for decimal numbers
+	local pattern='^[0-9]+([.][0-9]+)?$'
 
-### install php modules (Laravel Project)
-sudo apt install -y php8.2-mysql php8.2-mbstring php8.2-exif php8.2-bcmath php8.2-gd php8.2-zip php8.2-dom
+	if [[ "$input" =~ $pattern ]]; then
+		return 1
+	else
+		echo "Invalid PHP Version : $input"
+		return 0
+	fi
+}
+
+# Initialize PHP_VERSION
+PHP_VERSION=""
+
+# Keep asking until a valid PHP version is provided
+while true; do
+	PHP_VERSION=$(ask_php_version)
+
+	if validate_php_version "$PHP_VERSION"; then
+		break # Exit the loop when a valid version is provided
+	fi
+done
