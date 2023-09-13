@@ -38,7 +38,7 @@ validate_php_version() {
 
 		ans=$(echo $input | tr '[A-Z]' '[a-z]')
 		if [ "$ans" == "q" ]; then
-		  exit(0)
+			break
 		else
 			return 0
 		fi
