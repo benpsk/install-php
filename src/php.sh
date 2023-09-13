@@ -29,19 +29,19 @@ ask_php_version() {
 # validate php version input
 validate_php_version() {
 	local input="$1"
+
+	ans=$(echo $input | tr '[A-Z]' '[a-z]')
+	if [ "$ans" == "q" ]; then
+		break
+	else
+		return 0
+	fi
 	# Define a regular expression pattern for decimal numbers
 	local pattern='^[0-9]+([.][0-9]+)?$'
 
 	if [[ "$input" =~ $pattern ]]; then
 		return 1
 	else
-
-		ans=$(echo $input | tr '[A-Z]' '[a-z]')
-		if [ "$ans" == "q" ]; then
-			break
-		else
-			return 0
-		fi
 		echo "Invalid PHP Version : $input"
 		return 0
 	fi
