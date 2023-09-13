@@ -28,6 +28,7 @@ validate_php_version() {
 	local input="$1"
 	ans=$(echo $input | tr '[A-Z]' '[a-z]')
 	if [ "$ans" == "q" ]; then
+		echo "YOu enter quite"
 		return 2
 	else
 		# Define a regular expression pattern for decimal numbers
