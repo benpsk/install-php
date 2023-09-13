@@ -20,30 +20,25 @@ ask_php_version() {
 	echo "5. PHP 7.2"
 	echo "Enter 'q' to quit."
 	echo
-	echo -en "Please select PHP Version: "
-
-	read PHP_VERSION
-	return "$PHP_VERSION"
+	read -p "Please select PHP Version: " PHP_VERSION
 }
 
 # validate php version input
 validate_php_version() {
 	local input="$1"
-
 	ans=$(echo $input | tr '[A-Z]' '[a-z]')
 	if [ "$ans" == "q" ]; then
-		break
-	else
-		return 0
-	fi
-	# Define a regular expression pattern for decimal numbers
-	local pattern='^[0-9]+([.][0-9]+)?$'
-
-	if [[ "$input" =~ $pattern ]]; then
 		return 1
 	else
-		echo "Invalid PHP Version : $input"
-		return 0
+		# Define a regular expression pattern for decimal numbers
+		local pattern='^[0-9]+([.][0-9]+)?$'
+
+		if [[ "$input" =~ $pattern ]]; then
+			return 0
+		else
+			echo "Invalid PHP Version: $input"
+			return 1
+		fi
 	fi
 }
 
@@ -52,9 +47,11 @@ PHP_VERSION=""
 
 # Keep asking until a valid PHP version is provided
 while true; do
-	PHP_VERSION=$(ask_php_version)
+	ask_php_version
 
 	if validate_php_version "$PHP_VERSION"; then
 		break # Exit the loop when a valid version is provided
 	fi
 done
+
+echo "Selected PHP Version: $PHP_VERSION"
