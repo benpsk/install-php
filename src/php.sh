@@ -28,7 +28,7 @@ validate_php_version() {
 	local input="$1"
 	ans=$(echo $input | tr '[A-Z]' '[a-z]')
 	if [ "$ans" == "q" ]; then
-		return 1
+		return 2
 	else
 		# Define a regular expression pattern for decimal numbers
 		local pattern='^[0-9]+([.][0-9]+)?$'
@@ -49,7 +49,12 @@ PHP_VERSION=""
 while true; do
 	ask_php_version
 
-	if validate_php_version "$PHP_VERSION"; then
+	result=$(validate_php_version "$PHP_VERSION")
+
+	if [ "$result" -eq 2 ]; then
+		echo "Exiting the script."
+		exit 0
+	elif [ "$result" -eq 0 ]; then
 		break # Exit the loop when a valid version is provided
 	fi
 done
