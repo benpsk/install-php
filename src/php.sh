@@ -35,6 +35,13 @@ validate_php_version() {
 	if [[ "$input" =~ $pattern ]]; then
 		return 1
 	else
+
+		ans=$(echo $input | tr '[A-Z]' '[a-z]')
+		if [ "$ans" == "q" ]; then
+		  exit(0)
+		else
+			return 0
+		fi
 		echo "Invalid PHP Version : $input"
 		return 0
 	fi
