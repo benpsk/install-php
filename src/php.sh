@@ -1,10 +1,12 @@
 #!/bin/sh
 
 #### Disclaimer ####
+echo
 echo "***********Disclaimer**********"
 echo
 echo "The existing PHP will be overwritten by the new PHP!"
 echo
+echo "*******************************"
 echo
 
 VALID_PHP_VERSION=("8.2" "8.1" "8.0" "7.4" "7.2")
@@ -63,3 +65,22 @@ while true; do
 		echo 
 	fi
 done
+
+php="php$php_version"
+
+## install php (ondrje php)
+### add ondrje ppa
+sudo apt-get install software-properties-common -y
+sudo add-apt-repository ppa:ondrej/php -y
+sudo apt update
+
+sudo apt install -y "$php"
+
+### install php modules (Laravel Project)
+sudo apt install -y "$php"-mysql "$php"-mbstring "$php"-exif "$php"-bcmath "$php"-gd "$php"-zip "$php"-dom
+
+### install php-fpm by default
+sudo apt install -y "$php"-fpm
+
+
+
