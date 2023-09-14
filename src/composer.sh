@@ -1,18 +1,22 @@
 #!/bin/sh
 
 
-
-echo
-echo "***********Disclaimer**********"
-echo
-echo "The existing composer will be overwritten by the new composer depend on the php version!"
-echo
-echo "*******************************"
-echo
+is_php_install=""
+if command -v php &> /dev/null; then
+	is_php_install=true
+fi
 
 COMPOSER_QUESTIONS=("y" "n")
 
 ask_install_composer() {
+
+	echo
+	echo "***********Disclaimer**********"
+	echo
+	echo "The existing composer will be overwritten by the new composer depend on the php version!"
+	echo
+	echo "*******************************"
+	echo
 	echo
 	echo "1. y (default)"
 	echo "2. Enter 'q' to quit."
@@ -34,7 +38,7 @@ validate_php_version() {
 	fi
 }
 
-while true; do
+while "$is_php_install"; do
 	ask_install_composer	
 
 	composer=$(echo $composer | tr '[A-Z]' '[a-z]')
@@ -60,10 +64,11 @@ while true; do
 done
 
 
-#if [ "$composer" = "y" ]; then 
-#	echo "Installing composer..."
-#	php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-#	php -r "if (hash_file('sha384', 'composer-setup.php') === 'e21205b207c3ff031906575712edab6f13eb0b361f2085f1f1237b7126d785e826a450292b6cfd1d64d92e6563bbde02') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
-#	php composer-setup.php
-#	php -r "unlink('composer-setup.php');"
-#fi
+if [ "$composer" = "y" ]; then 
+	echo "Installing composer..."
+	php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+	php -r "if (hash_file('sha384', 'composer-setup.php') === 'e21205b207c3ff031906575712edab6f13eb0b361f2085f1f1237b7126d785e826a450292b6cfd1d64d92e6563bbde02') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
+	php composer-setup.php
+	php -r "unlink('composer-setup.php');"
+	sudo mv composer.phar /usr/local/bin/composer
+fi
