@@ -59,10 +59,11 @@ while true; do
 	fi
 done
 
-
 if [ "$web_server" = "1" ]; then 
+	### install apache2
 	if dpkg -l | grep -q "apache2"; then
 	    echo "Backup existing apache2 config to => /etc/apache2.bak"
+	    sudo service apache2 stop
 	    sudo mv /etc/apache2 /etc/apache2.bak
 	fi
 
@@ -77,5 +78,21 @@ if [ "$web_server" = "1" ]; then
 	sudo a2enmod rewrite
 
 else 
-	echo "install nginx $web_server"
+	if dpkg -l | grep -q "nginx"; then
+	    echo "Backup existing nginx config to => /etc/nginx.bak"
+	    sudo service nginx stop
+	    sudo mv /etc/nginx /etc/nginx.bak
+	fi
+
+	### install nginx
+	sudo apt install curl gnupg2 ca-certificates lsb-release ubuntu-keyring -y
+	curl https://nginx.org/keys/nginx_signing.key | gpg --dearmor \
+	    | sudo tee /usr/share/keyrings/nginx-archive-keyring.gpg >/dev/null
+	gpg --dry-run --quiet --no-keyring --import --import-options import-show /usr/share/keyrings/nginx-archive-keyring.gpg
+	echo "deb [signed-by=/usr/share/keyrings/nginx-archive-keyring.gpg] \
+	http://nginx.org/packages/ubuntu `lsb_release -cs` nginx" \
+	    | sudo tee /etc/apt/sources.list.d/nginx.list
+
+	sudo apt update
+	sudo apt install nginx -y
 fi
