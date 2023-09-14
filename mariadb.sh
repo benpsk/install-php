@@ -9,12 +9,11 @@ echo "Please keep in mind that if there's the exiting mariadb it'll backup and i
 if dpkg -l | grep -q mariadb-server; then
 	echo "MariaDB is installed."
 	sudo systemctl stop mariadb
-	sudo tar czvf mysql_backup.tar.gz /var/lib/mysql/
-	mv mysql_backup.tar.gz /var/lib/
-
+	backup_date=$(date +%Y%m%d)
+	sudo tar czvf /var/lib/mysql_backup_"$backup_date".tar.gz /var/lib/mysql/
+	sudo rm -rf /var/lib/mysql
+	
 	sudo apt remove mariadb-server -y
-	sudo apt autoremove -y
-
 	echo "Remove Successfuly"
 fi
 

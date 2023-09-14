@@ -45,42 +45,60 @@ while true; do
 	fi
 done
 
+
+### backup data
+if dpkg -l | grep -q "mariadb"; then
+    echo "Backup old mysql data to => /var/lib/mysql_backup.tar.gz"
+    echo "Backup old mysql config to => /etc/mysql_backup.tar.gz"
+    sudo systemctl stop mariadb  
+
+    backup_date=$(date +%Y%m%d)
+    
+    sudo tar czvf /var/lib/mysql_backup_"$backup_date".tar.gz -C /var/lib/mysql
+    
+    sudo tar czvf /etc/mysql/mysql_backup_"$backup_date".tar.gz -C /etc/mysql
+    
+    sudo apt purge mariadb-server -y
+
+    sudo rm -rf /var/lib/mysql/ /etc/mysql/
+
+elif dpkg -l | grep -q "mysql"; then
+    echo "Backup old mysql data to => /var/lib/mysql_backup.tar.gz"
+    echo "Backup old mysql config to => /etc/mysql_backup.tar.gz"
+    sudo systemctl stop mysql 
+    
+    backup_date=$(date +%Y%m%d)
+    
+    sudo tar czvf /var/lib/mysql_backup_"$backup_date".tar.gz -C /var/lib/mysql
+    sudo tar czvf /etc/mysql/mysql_backup_"$backup_date".tar.gz -C /etc/mysql
+   
+    sudo apt-get purge mysql-server* -y
+    sudo apt-get install -f
+    sudo apt autoremove -y
+    
+    sudo rm -rf /var/lib/mysql/ /etc/mysql/
+fi
+
+
 if [ "$database" = "1" ]; then 
 	### install mysql 
-	if dpkg -l | grep -q "mysql"; then
-	    echo "Backup existing apache2 config to => /etc/apache2.bak"
-	    sudo service apache2 stop
-	    sudo mv /etc/apache2 /etc/apache2.bak
-	fi
-
-	# install apache2 and dependencies
-	sudo apt install apache2 -y
-
-	php_version=$(php -v 2>&1 | grep -oP "(?<=PHP )([0-9]+\.[0-9]+)")
-
-	if [ -n "$php_version" ]; then
-	    sudo apt install libapache2-mod-php"$php_version"
-	fi
-	sudo a2enmod rewrite
-
+	sudo apt-get install mysql-server -y
 else 
 	### install mariadb
-	echo "install mariadb"
-	if dpkg -l | grep -q "nginx"; then
-	    echo "Backup existing nginx config to => /etc/nginx.bak"
-	    sudo service nginx stop
-	    sudo mv /etc/nginx /etc/nginx.bak
-	fi
+	sudo apt-get install apt-transport-https curl -y
+	sudo mkdir -p /etc/apt/keyrings
+	sudo curl -o /etc/apt/keyrings/mariadb-keyring.pgp 'https://mariadb.org/mariadb_release_signing_key.pgp'
+	sudo sh -c 'echo "# MariaDB 11.1 repository list - created 2023-09-11 22:00 UTC
+	  # https://mariadb.org/download/
+	  X-Repolib-Name: MariaDB
+	  Types: deb
+	  # deb.mariadb.org is a dynamic mirror if your preferred mirror goes offline. See https://mariadb.org/mirrorbits/ for details.
+	  # URIs: https://deb.mariadb.org/11.1/ubuntu
+	  URIs: https://mirror.kku.ac.th/mariadb/repo/11.1/ubuntu
+	  Suites: jammy
+	  Components: main main/debug
+	  Signed-By: /etc/apt/keyrings/mariadb-keyring.pgp " >/etc/apt/sources.list.d/mariadb.sources'
 
-	### install nginx
-	sudo apt install curl gnupg2 ca-certificates lsb-release ubuntu-keyring -y
-	curl https://nginx.org/keys/nginx_signing.key | gpg --dearmor \
-	    | sudo tee /usr/share/keyrings/nginx-archive-keyring.gpg >/dev/null
-	gpg --dry-run --quiet --no-keyring --import --import-options import-show /usr/share/keyrings/nginx-archive-keyring.gpg
-	echo "deb [signed-by=/usr/share/keyrings/nginx-archive-keyring.gpg] \
-	http://nginx.org/packages/ubuntu `lsb_release -cs` nginx" \
-	    | sudo tee /etc/apt/sources.list.d/nginx.list
-
-	sudo apt update
-	sudo apt install nginx -y
+	sudo apt-get update -y
+	sudo apt-get install mariadb-server -y
 fi
