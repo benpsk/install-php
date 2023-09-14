@@ -7,7 +7,7 @@ ask_install_web_server() {
 	echo
 	echo "***********Disclaimer**********"
 	echo
-	echo "The existing web server will be overwritten by the new web server depend on the new web server!"
+	echo "The existing web server will be overwritten."
 	echo
 	echo "*******************************"
 	echo
@@ -15,6 +15,7 @@ ask_install_web_server() {
 	echo "1. Apache2 (default)"
 	echo "2. Nginx"
 	echo "Enter 'q' to quit."
+	echo 
 	read -p "Install web server? : " web_server 
 	echo
 }
@@ -60,7 +61,21 @@ done
 
 
 if [ "$web_server" = "1" ]; then 
-	echo "install apache2 $web_server"
+	if dpkg -l | grep -q "apache2"; then
+	    echo "Backup existing apache2 config to => /etc/apache2.bak"
+	    sudo mv /etc/apache2 /etc/apache2.bak
+	fi
+
+	# install apache2 and dependencies
+	sudo apt install apache2 -y
+
+	php_version=$(php -v 2>&1 | grep -oP "(?<=PHP )([0-9]+\.[0-9]+)")
+
+	if [ -n "$php_version" ]; then
+	    sudo apt install libapache2-mod-php"$php_version"
+	fi
+	sudo a2enmod rewrite
+
 else 
 	echo "install nginx $web_server"
 fi
