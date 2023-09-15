@@ -60,20 +60,21 @@ ask_php_version() {
 	cat <<-EOF
 
 		    ***********Disclaimer**********
-				The existing PHP will be overwritten by the new PHP!
+			
+			The existing PHP will be overwritten by the new PHP!
 
-				*******************************
+			*******************************
 
-				Available PHP Versions:
+			Available PHP Versions:
 
-				1. PHP 8.2 (default)
-				2. PHP 8.1
-				3. PHP 8.0
-				4. PHP 7.4
-				5. PHP 7.2
+			1. PHP 8.2 (default)
+			2. PHP 8.1
+			3. PHP 8.0
+			4. PHP 7.4
+			5. PHP 7.2
 
-				- Enter 0 (zero) to skip.
-				- Enter 'q' to quit.
+			- Enter 0 (zero) to skip.
+			- Enter 'q' to quit.
 
 	EOF
 	read -p "Please select PHP Version: " php_version
@@ -91,7 +92,7 @@ while true; do
 	fi
 
 	if [ "$php_version" = "0" ]; then
-		echo "Skipping... PHP installation"
+		echo "Skipping... PHP installation!"
 		PHP_SKIP=true
 		break
 	fi
@@ -120,8 +121,7 @@ if [ "$PHP_SKIP" = "false" ]; then
 	### check for apache2
 	backup_and_remove_apache2
 
-	## install php (ondrje php)
-	### add ondrje ppa
+	## install php (ondrje php) ### add ondrje ppa
 	sudo apt-get install software-properties-common -y
 	sudo add-apt-repository ppa:ondrej/php -y
 	sudo apt-get update
@@ -167,12 +167,13 @@ ask_install_composer() {
 	cat <<-EOF
 
 		***********Disclaimer**********
+		
 		The existing composer will be overwritten by the new composer depend on the php version!
 
 		*******************************
 
 		- y (default)
-		- Enter 0 (zero) to skp.
+		- Enter 0 (zero) to skip.
 		- Enter 'q' to quit.
 
 	EOF
@@ -264,15 +265,16 @@ ask_install_web_server() {
 	cat <<-EOF
 
 		    ***********Disclaimer**********
-				The existing web server will be overwritten.
+			
+			The existing web server will be overwritten.
 
 		    *******************************
 
-				1. Apache2 (default)
-				2. Nginx
+			1. Apache2 (default)
+			2. Nginx
 
-				- Enter 0 (zero) to skip.
-				- Enter 'q' to quit.
+			- Enter 0 (zero) to skip.
+			- Enter 'q' to quit.
 
 	EOF
 
@@ -388,7 +390,8 @@ ask_install_database() {
 	cat <<-EOF
 
 		    ***********Disclaimer**********
-		    The existing database will be overwrite.
+		    
+			The existing database will be overwrite.
 
 		    *******************************
 
