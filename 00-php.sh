@@ -1,7 +1,7 @@
 #!/bin/bash
 
 VALID_PHP_VERSION=("8.2" "8.1" "8.0" "7.4" "7.2")
-PHP_QUESTIONS=("1", "2", "3", "4", "5")
+PHP_QUESTIONS=("1" "2" "3" "4" "5")
 PHP_SKIP=false
 
 ask_php_version() {
@@ -24,7 +24,7 @@ ask_php_version() {
 		- Enter 'q' to quit.
 
 	EOF
-	read -pr "Please select PHP Version: " php_version
+	read -p "Please select PHP Version: " php_version
 	echo
 }
 
