@@ -4,6 +4,41 @@
 ##
 ##
 ##
+## *************** START COMMON FUNCTION SECTION ****************
+##
+##
+##
+
+backup_and_remove_apache2() {
+
+	if dpkg -l | grep -q "apache2"; then
+		echo "Backup existing apache2 config to => /etc/apache2.tar.gz"
+		sudo systemctl stop apache2
+
+		web_server_date=$(date +%Y%m%d)
+
+		sudo tar czvf /etc/apache2_backup_"$web_server_date".tar.gz -C /etc/apache2
+
+		sudo apt-get remove apache2 -y
+
+		sudo rm -rf /etc/apache2/
+	fi
+}
+
+##
+##
+##
+## *************** END DATABASE SECTION ****************
+##
+##
+##
+##
+##
+
+##
+##
+##
+##
 ##
 ## *************** START PHP SECTION ****************
 ##
@@ -82,18 +117,22 @@ php="php$php_version"
 if [ "$PHP_SKIP" = "false" ]; then
 	echo "Installing... $php"
 
+	### check for apache2
+	backup_and_remove_apache2
+
 	## install php (ondrje php)
 	### add ondrje ppa
 	sudo apt-get install software-properties-common -y
 	sudo add-apt-repository ppa:ondrej/php -y
-	sudo apt update
+	sudo apt-get update
 
-	sudo apt install -y "$php"
+	sudo apt-get install -y "$php"
 
 	### install php modules (Laravel Project)
-	sudo apt install -y "$php"-mysql "$php"-mbstring "$php"-exif "$php"-bcmath "$php"-gd "$php"-zip "$php"-dom
+	sudo apt-get install -y "$php"-mysql "$php"-mbstring "$php"-exif "$php"-bcmath "$php"-gd "$php"-zip "$php"-dom
+
 	### install php-fpm by default
-	sudo apt install -y "$php"-fpm
+	sudo apt-get install -y "$php"-fpm
 fi
 ##
 ##
@@ -114,11 +153,353 @@ fi
 ##
 ##
 ##
+is_php_install=""
+
+if command -v php &>/dev/null; then
+	is_php_install=true
+fi
+
+COMPOSER_QUESTIONS=("y" "n")
+COMPOSER_SKIP=false
+
+ask_install_composer() {
+
+	cat <<-EOF
+
+		***********Disclaimer**********
+		The existing composer will be overwritten by the new composer depend on the php version!
+
+		*******************************
+
+		- y (default)
+		- Enter 0 (zero) to skp.
+		- Enter 'q' to quit.
+
+	EOF
+
+	read -p "Install Composer? (y/n) : " composer
+	echo
+}
+
+validate_php_version() {
+	local input="$1"
+
+	# Define a regular expression pattern for decimal numbers
+	local pattern='^[0-9]+([.][0-9]+)?$'
+
+	if [[ "$input" =~ $pattern ]]; then
+		return 0
+	else
+		return 1
+	fi
+}
+
+while "$is_php_install"; do
+	ask_install_composer
+
+	composer=$(echo "$composer" | tr '[:upper:]' '[:lower:]')
+
+	if [ "$composer" = "q" ]; then
+		echo "Goodbye, See you next time!"
+		exit 0
+	fi
+
+	if [ "$composer" = "0" ]; then
+		echo "Skipping... Composer installation"
+		COMPOSER_SKIP=true
+		break
+	fi
+
+	if [ -z "$composer" ]; then
+		composer="y"
+	fi
+
+	if [[ " ${COMPOSER_QUESTIONS[*]} " == *" ${composer} "* ]]; then
+		break
+	else
+		echo "***********************************"
+		echo
+		echo "Please type y (or) n"
+		echo
+	fi
+done
+
+if [ "$composer" = "y" ] && [ "$COMPOSER_SKIP" = "false" ]; then
+	# remove existing composer
+	ehco "Cleaning Composer..."
+	sudo apt-get remove composer -y
+
+	echo "Installing composer..."
+	php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+	php -r "if (hash_file('sha384', 'composer-setup.php') === 'e21205b207c3ff031906575712edab6f13eb0b361f2085f1f1237b7126d785e826a450292b6cfd1d64d92e6563bbde02') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
+	php composer-setup.php
+	php -r "unlink('composer-setup.php');"
+	sudo mv composer.phar /usr/local/bin/composer
+fi
 
 ##
 ##
 ##
 ## *************** END COMPOSER SECTION ****************
+##
+##
+##
+##
+##
+
+##
+##
+##
+##
+##
+## *************** START WEB SERVER SECTION ****************
+##
+##
+##
+
+WEB_SERVER_QUESTIONS=("1" "2")
+WEB_SERVER_SKIP=false
+
+ask_install_web_server() {
+	cat <<-EOF
+
+		    ***********Disclaimer**********
+				The existing web server will be overwritten.
+
+		    *******************************
+
+				1. Apache2 (default)
+				2. Nginx
+
+				- Enter 0 (zero) to skip.
+				- Enter 'q' to quit.
+
+	EOF
+
+	read -p "Install web server? : " web_server
+	echo
+}
+
+while true; do
+	ask_install_web_server
+
+	web_server=$(echo "$web_server" | tr '[:upper:]' '[:lower:]')
+
+	if [ "$web_server" = "q" ]; then
+		echo "Goodbye, See you next time!"
+		exit 0
+	fi
+
+	if [ "$web_server" = "0" ]; then
+		echo "Skipping... Web Server installation"
+		WEB_SERVER_SKIP=true
+		break
+	fi
+
+	if [ -z "$web_server" ]; then
+		web_server="1"
+	fi
+
+	if [[ " ${WEB_SERVER_QUESTIONS[*]} " == *" ${web_server} "* ]]; then
+		break
+	else
+		echo "*******************************"
+		echo
+		echo "Please choose the given prefix number"
+		echo
+	fi
+done
+
+if [ "$WEB_SERVER_SKIP" = "false" ]; then
+	echo "Installing... Web Server"
+
+	if [ "$web_server" = "1" ]; then
+
+		## disable nginx if installed (prevent from port 80)
+		if dpkg -l | grep -q "nginx"; then
+			sudo systemctl stop nginx
+		fi
+
+		backup_and_remove_apache2
+
+		# install apache2 and dependencies
+		sudo apt-get install apache2 -y
+
+		php_version=$(php -v 2>&1 | grep -oP "(?<=PHP )([0-9]+\.[0-9]+)")
+
+		if [ -n "$php_version" ]; then
+			sudo apt-get install libapache2-mod-php"$php_version"
+			sudo a2enmod php"$php_version"
+		fi
+		sudo a2enmod rewrite
+
+	else
+
+		## if apache2 is install stop
+		if dpkg -l | grep -q "apache2"; then
+			sudo systemctl stop apache2
+		fi
+
+		### install nginx
+		if dpkg -l | grep -q "nginx"; then
+			echo "Backup existing nginx config to => /etc/nginx.bak"
+			sudo systemctl stop nginx
+			sudo mv /etc/nginx /etc/nginx.bak
+		fi
+
+		sudo apt-get install curl gnupg2 ca-certificates lsb-release ubuntu-keyring -y
+		curl https://nginx.org/keys/nginx_signing.key | gpg --dearmor |
+			sudo tee /usr/share/keyrings/nginx-archive-keyring.gpg >/dev/null
+		gpg --dry-run --quiet --no-keyring --import --import-options import-show /usr/share/keyrings/nginx-archive-keyring.gpg
+		echo "deb [signed-by=/usr/share/keyrings/nginx-archive-keyring.gpg] \
+    http://nginx.org/packages/ubuntu $(lsb_release -cs) nginx" |
+			sudo tee /etc/apt/sources.list.d/nginx.list
+
+		sudo apt-get update
+		sudo apt-get install nginx -y
+	fi
+fi
+
+##
+##
+##
+## *************** END WEB SERVER SECTION ****************
+##
+##
+##
+##
+##
+
+##
+##
+##
+##
+##
+## *************** START DATABASE SECTION ****************
+##
+##
+##
+
+DATABASE_QUESTIONS=("1" "2")
+DATABASE_SKIP=false
+
+ask_install_database() {
+
+	cat <<-EOF
+
+		    ***********Disclaimer**********
+		    The existing database will be overwrite.
+
+		    *******************************
+
+		    1. MySQL(default)
+		    2. Mariadb
+
+		    - Enter 0 (zero) to skip."
+		    - Enter 'q' to quit."
+
+	EOF
+	read -p "Install database ? : " database
+	echo
+}
+
+while true; do
+	ask_install_database
+
+	database=$(echo "$database" | tr '[:upper:]' '[:lower:]')
+
+	if [ "$database" = "q" ]; then
+		echo "Goodbye, See you next time!"
+		exit 0
+	fi
+
+	if [ "$database" = "0" ]; then
+		echo "Skipping... Database installation"
+		DATABASE_SKIP=true
+		break
+	fi
+
+	if [ -z "$database" ]; then
+		database="1"
+	fi
+
+	if [[ " ${DATABASE_QUESTIONS[*]} " == *" ${database} "* ]]; then
+		break
+	else
+		echo "*******************************"
+		echo
+		echo "Please choose the given prefix number"
+		echo
+	fi
+done
+
+if [ "$DATABASE_SKIP" = "false" ]; then
+
+	echo "Installing... Database"
+
+	db_backup() {
+
+		db_date=$(date +%Y%m%d)
+
+		sudo tar czvf /var/lib/mysql_backup_"$db_date".tar.gz -C /var/lib/mysql
+		sudo tar czvf /etc/mysql/mysql_backup_"$db_date".tar.gz -C /etc/mysql
+	}
+
+	### backup data
+	if dpkg -l | grep -q "mariadb"; then
+		echo "Backup old mysql data to => /var/lib/mysql_backup.tar.gz"
+		echo "Backup old mysql config to => /etc/mysql_backup.tar.gz"
+		sudo systemctl stop mariadb
+
+		db_backup
+
+		sudo apt-get purge mariadb-server -y
+
+	elif dpkg -l | grep -q "mysql"; then
+		echo "Backup old mysql data to => /var/lib/mysql_backup.tar.gz"
+		echo "Backup old mysql config to => /etc/mysql_backup.tar.gz"
+		sudo systemctl stop mysql
+
+		db_backup
+
+		sudo apt-get purge mysql-server* -y
+		sudo apt-get install -f
+		sudo apt-get autoremove -y
+
+	fi
+
+	sudo rm -rf /var/lib/mysql/ /etc/mysql/
+
+	if [ "$database" = "1" ]; then
+		### install mysql
+		sudo apt-get install mysql-server -y
+	else
+		### install mariadb
+		sudo apt-get install apt-transport-https curl -y
+		sudo mkdir -p /etc/apt/keyrings
+		sudo curl -o /etc/apt/keyrings/mariadb-keyring.pgp 'https://mariadb.org/mariadb_release_signing_key.pgp'
+		sudo sh -c "echo \"# MariaDB 11.1 repository list - created 2023-09-11 22:00 UTC
+    # https://mariadb.org/download/
+    X-Repolib-Name: MariaDB
+    Types: deb
+    # deb.mariadb.org is a dynamic mirror if your preferred mirror goes offline. See https://mariadb.org/mirrorbits/ for details.
+    # URIs: https://deb.mariadb.org/11.1/ubuntu
+    URIs: https://mirror.kku.ac.th/mariadb/repo/11.1/ubuntu
+    Suites: $(lsb_release -cs)
+    Components: main main/debug
+    Signed-By: /etc/apt/keyrings/mariadb-keyring.pgp \" >/etc/apt/sources.list.d/mariadb.sources"
+
+		sudo apt-get update -y
+		sudo apt-get install mariadb-server -y
+	fi
+fi
+
+##
+##
+##
+## *************** END DATABASE SECTION ****************
+##
+##
 ##
 ##
 ##
