@@ -89,13 +89,13 @@ if [ "$WEB_SERVER_SKIP" = "false" ]; then
     sudo a2enmod rewrite
 
   else 
+    ### install nginx
     if dpkg -l | grep -q "nginx"; then
-        echo "Backup existing nginx config to => /etc/nginx.bak"
-        sudo service nginx stop
-        sudo mv /etc/nginx /etc/nginx.bak
+      echo "Backup existing nginx config to => /etc/nginx.bak"
+      sudo service nginx stop
+      sudo mv /etc/nginx /etc/nginx.bak
     fi
 
-    ### install nginx
     sudo apt install curl gnupg2 ca-certificates lsb-release ubuntu-keyring -y
     curl https://nginx.org/keys/nginx_signing.key | gpg --dearmor \
         | sudo tee /usr/share/keyrings/nginx-archive-keyring.gpg >/dev/null

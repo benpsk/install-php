@@ -1,6 +1,5 @@
 #!/bin/sh
 
-
 is_php_install=""
 if command -v php &> /dev/null; then
 	is_php_install=true
