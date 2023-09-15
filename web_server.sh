@@ -75,7 +75,8 @@ while true; do
 done
 
 if [ "$web_server" = "1" ]; then 
-	### install apache2
+
+### install apache2
 	if dpkg -l | grep -q "apache2"; then
     echo "Backup existing apache2 config to => /etc/apache2.tar.gz"
     sudo systemctl stop apache2
