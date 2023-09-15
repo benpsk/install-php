@@ -6,25 +6,23 @@ VALID_PHP_VERSION=("8.2" "8.1" "8.0" "7.4" "7.2")
 PHP_SKIP=false
 
 ask_php_version() {
-	#### Disclaimer ####
-	echo
-	echo "***********Disclaimer**********"
-	echo
-	echo "The existing PHP will be overwritten by the new PHP!"
-	echo
-	echo "*******************************"
-	echo
-	echo "Available PHP Versions"
-	echo 
-	echo "1. PHP 8.2 (default)"
-	echo "2. PHP 8.1"
-	echo "3. PHP 8.0"
-	echo "4. PHP 7.4"
-	echo "5. PHP 7.2"
-	echo "Enter 0 (zero) to skip."
-	echo "Enter 'q' to quit."
-	echo
-	read -p "Please select PHP Version: " php_version 
+	cat <<-EOF
+		***********Disclaimer**********
+		The existing PHP will be overwritten by the new PHP!
+
+		Available PHP Versions:
+
+		1. PHP 8.2 (default)
+		2. PHP 8.1
+		3. PHP 8.0
+		4. PHP 7.4
+		5. PHP 7.2
+
+		Enter 0 (zero) to skip.
+		Enter 'q' to quit.
+
+	EOF
+	read -p "Please select PHP Version: " php_version
 	echo
 }
 
@@ -54,7 +52,7 @@ while true; do
 	fi
 	
 	if [ "$php_version" = "0" ]; then
-		echo "Skipping... PHP"
+		echo "Skipping... PHP installation"
 		PHP_SKIP=true
 		break;
 	fi
@@ -79,7 +77,7 @@ php="php$php_version"
 
 
 if [ "$PHP_SKIP" = "false" ]; then 
-	echo "PHP Version $php"
+	echo "Installing... $php"
 
 	## install php (ondrje php)
 	### add ondrje ppa
