@@ -3,21 +3,36 @@
 WEB_SERVER_QUESTIONS=("1" "2")
 
 ask_install_web_server() {
+#	echo
+#	echo "***********Disclaimer**********"
+#	echo
+#	echo "The existing web server will be overwritten."
+#	echo
+#	echo "*******************************"
+#	echo
+#	echo
+#	echo "1. Apache2 (default)"
+#	echo "2. Nginx"
+#	echo "Enter 'q' to quit."
+#	echo 
+#	read -p "Install web server? : " web_server 
+#	echo
 
-	echo
-	echo "***********Disclaimer**********"
-	echo
-	echo "The existing web server will be overwritten."
-	echo
-	echo "*******************************"
-	echo
-	echo
-	echo "1. Apache2 (default)"
-	echo "2. Nginx"
-	echo "Enter 'q' to quit."
-	echo 
-	read -p "Install web server? : " web_server 
-	echo
+
+  cat <<-EOF
+    ***********Disclaimer**********
+    The existing web server will be overwritten.
+
+    *******************************
+
+    1. Apache2 (default)
+    2. Nginx
+ 
+    Enter 'q' to quit.
+
+    read -p "Install web server? : " web_server
+
+  EOF
 }
 
 # validate php version input
@@ -62,9 +77,11 @@ done
 if [ "$web_server" = "1" ]; then 
 	### install apache2
 	if dpkg -l | grep -q "apache2"; then
-	    echo "Backup existing apache2 config to => /etc/apache2.bak"
-	    sudo service apache2 stop
-	    sudo mv /etc/apache2 /etc/apache2.bak
+    echo "Backup existing apache2 config to => /etc/apache2.tar.gz"
+    sudo systemctl stop apache2
+    
+    sudo tar czvf /etc/apache2_backup_"$backup_date".tar.gz -C /etc/apache2
+    sudo rm -rf /etc/apache2/
 	fi
 
 	# install apache2 and dependencies
