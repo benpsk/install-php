@@ -3,6 +3,22 @@
 WEB_SERVER_QUESTIONS=("1" "2")
 WEB_SERVER_SKIP=false
 
+backup_and_remove_apache2() {
+
+	if dpkg -l | grep -q "apache2"; then
+		echo "Backup existing apache2 config to => /etc/apache2.tar.gz"
+		sudo systemctl stop apache2
+
+		web_server_date=$(date +%Y%m%d)
+
+		sudo tar czvf /etc/apache2_backup_"$web_server_date".tar.gz -C /etc/apache2
+
+		sudo apt-get remove apache2 -y
+
+		sudo rm -rf /etc/apache2/
+	fi
+}
+
 ask_install_web_server() {
 	cat <<-EOF
 
@@ -57,36 +73,40 @@ if [ "$WEB_SERVER_SKIP" = "false" ]; then
 	echo "Installing... Web Server"
 
 	if [ "$web_server" = "1" ]; then
-		### install apache2
-		if dpkg -l | grep -q "apache2"; then
-			echo "Backup existing apache2 config to => /etc/apache2.tar.gz"
-			sudo systemctl stop apache2
 
-			web_server_date=$(date +%Y%m%d)
-
-			sudo tar czvf /etc/apache2_backup_"$web_server_date".tar.gz -C /etc/apache2
-			sudo rm -rf /etc/apache2/
+		## disable nginx if installed (prevent from port 80)
+		if dpkg -l | grep -q "nginx"; then
+			sudo systemctl stop nginx
 		fi
 
+		backup_and_remove_apache2
+
 		# install apache2 and dependencies
-		sudo apt install apache2 -y
+		sudo apt-get install apache2 -y
 
 		php_version=$(php -v 2>&1 | grep -oP "(?<=PHP )([0-9]+\.[0-9]+)")
 
 		if [ -n "$php_version" ]; then
-			sudo apt install libapache2-mod-php"$php_version"
+			sudo apt-get install libapache2-mod-php"$php_version"
+			sudo a2enmod php"$php_version"
 		fi
 		sudo a2enmod rewrite
 
 	else
+
+		## if apache2 is install stop
+		if dpkg -l | grep -q "apache2"; then
+			sudo systemctl stop apache2
+		fi
+
 		### install nginx
 		if dpkg -l | grep -q "nginx"; then
 			echo "Backup existing nginx config to => /etc/nginx.bak"
-			sudo service nginx stop
+			sudo systemctl stop nginx
 			sudo mv /etc/nginx /etc/nginx.bak
 		fi
 
-		sudo apt install curl gnupg2 ca-certificates lsb-release ubuntu-keyring -y
+		sudo apt-get install curl gnupg2 ca-certificates lsb-release ubuntu-keyring -y
 		curl https://nginx.org/keys/nginx_signing.key | gpg --dearmor |
 			sudo tee /usr/share/keyrings/nginx-archive-keyring.gpg >/dev/null
 		gpg --dry-run --quiet --no-keyring --import --import-options import-show /usr/share/keyrings/nginx-archive-keyring.gpg
@@ -94,7 +114,7 @@ if [ "$WEB_SERVER_SKIP" = "false" ]; then
     http://nginx.org/packages/ubuntu $(lsb_release -cs) nginx" |
 			sudo tee /etc/apt/sources.list.d/nginx.list
 
-		sudo apt update
-		sudo apt install nginx -y
+		sudo apt-get update
+		sudo apt-get install nginx -y
 	fi
 fi

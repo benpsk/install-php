@@ -74,7 +74,7 @@ done
 if [ "$composer" = "y" ] && [ "$COMPOSER_SKIP" = "false" ]; then
 	# remove existing composer
 	ehco "Cleaning Composer..."
-	sudo apt remove composer -y
+	sudo apt-get remove composer -y
 
 	echo "Installing composer..."
 	php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"

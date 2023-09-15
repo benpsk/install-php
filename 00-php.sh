@@ -10,6 +10,21 @@ PHP_VERSIONS["5"]="7.2"
 
 PHP_SKIP=false
 
+backup_and_remove_apache2() {
+
+	if dpkg -l | grep -q "apache2"; then
+		echo "Backup existing apache2 config to => /etc/apache2.tar.gz"
+		sudo systemctl stop apache2
+
+		web_server_date=$(date +%Y%m%d)
+
+		sudo tar czvf /etc/apache2_backup_"$web_server_date".tar.gz -C /etc/apache2
+
+		sudo apt-get remove apache2 -y
+
+		sudo rm -rf /etc/apache2/
+	fi
+}
 ask_php_version() {
 
 	cat <<-EOF
@@ -72,17 +87,20 @@ php="php$php_version"
 if [ "$PHP_SKIP" = "false" ]; then
 	echo "Installing... $php"
 
+	### check for apache2
+	backup_and_remove_apache2
+
 	## install php (ondrje php)
 	### add ondrje ppa
 	sudo apt-get install software-properties-common -y
 	sudo add-apt-repository ppa:ondrej/php -y
-	sudo apt update
+	sudo apt-get update
 
-	sudo apt install -y "$php"
+	sudo apt-get install -y "$php"
 
 	### install php modules (Laravel Project)
-	sudo apt install -y "$php"-mysql "$php"-mbstring "$php"-exif "$php"-bcmath "$php"-gd "$php"-zip "$php"-dom
+	sudo apt-get install -y "$php"-mysql "$php"-mbstring "$php"-exif "$php"-bcmath "$php"-gd "$php"-zip "$php"-dom
 
 	### install php-fpm by default
-	sudo apt install -y "$php"-fpm
+	sudo apt-get install -y "$php"-fpm
 fi

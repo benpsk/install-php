@@ -73,7 +73,7 @@ if [ "$DATABASE_SKIP" = "false" ]; then
 
 		db_backup
 
-		sudo apt purge mariadb-server -y
+		sudo apt-get purge mariadb-server -y
 
 	elif dpkg -l | grep -q "mysql"; then
 		echo "Backup old mysql data to => /var/lib/mysql_backup.tar.gz"
@@ -84,7 +84,7 @@ if [ "$DATABASE_SKIP" = "false" ]; then
 
 		sudo apt-get purge mysql-server* -y
 		sudo apt-get install -f
-		sudo apt autoremove -y
+		sudo apt-get autoremove -y
 
 	fi
 
