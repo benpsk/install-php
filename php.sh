@@ -1,12 +1,11 @@
 #!/bin/sh
 
-
 VALID_PHP_VERSION=("8.2" "8.1" "8.0" "7.4" "7.2")
-
 PHP_SKIP=false
 
 ask_php_version() {
-	cat <<-EOF
+
+  cat <<-EOF
 		***********Disclaimer**********
 		The existing PHP will be overwritten by the new PHP!
 
@@ -26,7 +25,6 @@ ask_php_version() {
 	echo
 }
 
-# validate php version input
 validate_php_version() {
 	local input="$1"
 	
