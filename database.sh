@@ -55,11 +55,9 @@ if dpkg -l | grep -q "mariadb"; then
     backup_date=$(date +%Y%m%d)
     
     sudo tar czvf /var/lib/mysql_backup_"$backup_date".tar.gz -C /var/lib/mysql
-    
     sudo tar czvf /etc/mysql/mysql_backup_"$backup_date".tar.gz -C /etc/mysql
     
     sudo apt purge mariadb-server -y
-
     sudo rm -rf /var/lib/mysql/ /etc/mysql/
 
 elif dpkg -l | grep -q "mysql"; then
@@ -84,20 +82,31 @@ if [ "$database" = "1" ]; then
 	### install mysql 
 	sudo apt-get install mysql-server -y
 else 
+	### check ubuntu codename 
+
+	codename="jimmy"
+	if [ -f /etc/os-release ]; then
+	    codename_line=$(grep "VERSION_CODENAME" /etc/os-release)
+	    
+	    codename=$(echo "$codename_line" | cut -d= -f2 | tr -d '"')
+	else
+	    echo "Unable to determine Ubuntu codename."
+	fi
+
 	### install mariadb
 	sudo apt-get install apt-transport-https curl -y
 	sudo mkdir -p /etc/apt/keyrings
 	sudo curl -o /etc/apt/keyrings/mariadb-keyring.pgp 'https://mariadb.org/mariadb_release_signing_key.pgp'
-	sudo sh -c 'echo "# MariaDB 11.1 repository list - created 2023-09-11 22:00 UTC
+	sudo sh -c "echo \"# MariaDB 11.1 repository list - created 2023-09-11 22:00 UTC
 	  # https://mariadb.org/download/
 	  X-Repolib-Name: MariaDB
 	  Types: deb
 	  # deb.mariadb.org is a dynamic mirror if your preferred mirror goes offline. See https://mariadb.org/mirrorbits/ for details.
 	  # URIs: https://deb.mariadb.org/11.1/ubuntu
 	  URIs: https://mirror.kku.ac.th/mariadb/repo/11.1/ubuntu
-	  Suites: jammy
+	  Suites: $codename
 	  Components: main main/debug
-	  Signed-By: /etc/apt/keyrings/mariadb-keyring.pgp " >/etc/apt/sources.list.d/mariadb.sources'
+	  Signed-By: /etc/apt/keyrings/mariadb-keyring.pgp \" >/etc/apt/sources.list.d/mariadb.sources"
 
 	sudo apt-get update -y
 	sudo apt-get install mariadb-server -y
