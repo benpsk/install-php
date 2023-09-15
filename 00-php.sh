@@ -1,6 +1,7 @@
 #!/bin/bash
 
 VALID_PHP_VERSION=("8.2" "8.1" "8.0" "7.4" "7.2")
+PHP_QUESTIONS=("1", "2", "3", "4", "5")
 PHP_SKIP=false
 
 ask_php_version() {
@@ -8,6 +9,7 @@ ask_php_version() {
 	cat <<-EOF
 		***********Disclaimer**********
 		The existing PHP will be overwritten by the new PHP!
+
 		*******************************
 
 		Available PHP Versions:
@@ -18,8 +20,8 @@ ask_php_version() {
 		4. PHP 7.4
 		5. PHP 7.2
 
-		Enter 0 (zero) to skip.
-		Enter 'q' to quit.
+		- Enter 0 (zero) to skip.
+		- Enter 'q' to quit.
 
 	EOF
 	read -pr "Please select PHP Version: " php_version
@@ -47,7 +49,9 @@ while true; do
 	fi
 
 	if [[ " ${VALID_PHP_VERSION[*]} " == *" ${php_version} "* ]]; then
-		echo "Valid PHP Version"
+		break
+	elif [[ " ${PHP_QUESTIONS[*]} " == *" ${php_version} "* ]]; then
+		echo "Still Ok"
 		break
 	else
 		echo "--------------------------------"
@@ -58,6 +62,8 @@ while true; do
 done
 
 php="php$php_version"
+
+PHP_SKIP=true
 
 if [ "$PHP_SKIP" = "false" ]; then
 	echo "Installing... $php"
