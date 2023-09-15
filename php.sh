@@ -6,7 +6,8 @@ PHP_SKIP=false
 ask_php_version() {
 
   cat <<-EOF
-		***********Disclaimer**********
+
+    ***********Disclaimer**********
 		The existing PHP will be overwritten by the new PHP!
 
 		Available PHP Versions:
@@ -38,11 +39,10 @@ validate_php_version() {
 	fi
 }
 
-# Keep asking until a valid PHP version is provided
 while true; do
 	ask_php_version
 
-	php_version=$(echo $php_version | tr '[A-Z]' '[a-z]')
+	php_version=$(echo $php_version | tr "[A-Z]" "[a-z]")
 
 	if [ "$php_version" = "q" ]; then
 		echo "Goodbye, See you next time!"
@@ -60,7 +60,7 @@ while true; do
 	fi
 
 	if [[ " ${VALID_PHP_VERSION[*]} " == *" ${php_version} "* ]]
-       	then
+  then
 		echo "Valid PHP Version"
 		break
 	else 

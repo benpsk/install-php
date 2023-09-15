@@ -1,29 +1,32 @@
 #!/bin/sh
 
 is_php_install=""
+
 if command -v php &> /dev/null; then
 	is_php_install=true
 fi
 
 COMPOSER_QUESTIONS=("y" "n")
+COMPOSER_SKIP=false
 
 ask_install_composer() {
+	
+	cat <<-EOF
 
-	echo
-	echo "***********Disclaimer**********"
-	echo
-	echo "The existing composer will be overwritten by the new composer depend on the php version!"
-	echo
-	echo "*******************************"
-	echo
-	echo
-	echo "1. y (default)"
-	echo "2. Enter 'q' to quit."
+		***********Disclaimer**********
+		The existing composer will be overwritten by the new composer depend on the php version!
+		*******************************
+
+		1. y (default)
+    2. Enter 0 (zero) to skp.
+		3. Enter 'q' to quit.
+
+	EOF
+
 	read -p "Install Composer? (y/n) : " composer 
 	echo
 }
 
-# validate php version input
 validate_php_version() {
 	local input="$1"
 	
@@ -47,6 +50,12 @@ while "$is_php_install"; do
 		exit 0
 	fi
 	
+	if [ "$composer" = "0" ]; then
+		echo "Skipping... Composer installation"
+		COMPOSER_SKIP=true
+		break;
+	fi
+
 	if [ -z "$composer" ]; then
 	    composer="y"
 	fi
@@ -63,15 +72,15 @@ while "$is_php_install"; do
 done
 
 
-if [ "$composer" = "y" ]; then 
+if [ "$composer" = "y" ] && [ "$COMPOSER_SKIP" = "false" ]; then 
 	# remove existing composer
-	ehco "Cleaning composer..."
-	sudo apt remove composer -y
-	
-	echo "Installing composer..."
-	php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-	php -r "if (hash_file('sha384', 'composer-setup.php') === 'e21205b207c3ff031906575712edab6f13eb0b361f2085f1f1237b7126d785e826a450292b6cfd1d64d92e6563bbde02') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
-	php composer-setup.php
-	php -r "unlink('composer-setup.php');"
-	sudo mv composer.phar /usr/local/bin/composer
+#	ehco "Cleaning composer..."
+#	sudo apt remove composer -y
+#	
+#	echo "Installing composer..."
+#	php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+#	php -r "if (hash_file('sha384', 'composer-setup.php') === 'e21205b207c3ff031906575712edab6f13eb0b361f2085f1f1237b7126d785e826a450292b6cfd1d64d92e6563bbde02') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
+#	php composer-setup.php
+#	php -r "unlink('composer-setup.php');"
+#	sudo mv composer.phar /usr/local/bin/composer
 fi
