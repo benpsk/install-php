@@ -8,30 +8,19 @@ ask_install_web_server() {
 
     ***********Disclaimer**********
 		The existing web server will be overwritten.
-	
+
     *******************************
 
 		1. Apache2 (default)
 		2. Nginx
 	
-		Enter 0 (zero) to skip.
-		Enter 'q' to quit.
+		- Enter 0 (zero) to skip.
+		- Enter 'q' to quit.
 
-	EOF
-	read -p "Install web server? : " web_server
+EOF
+
+read -p "Install web server? : " web_server
 	echo
-}
-
-validate_web_server_input() {
-	local input="$1"
-	
-	local pattern='^[0-9]?$'
-
-	if [[ "$input" =~ $pattern ]]; then
-		return 0
-	else
-		return 1
-	fi
 }
 
 while true; do
@@ -45,7 +34,7 @@ while true; do
 	fi
 	
   if [ "$web_server" = "0" ]; then
-		echo "Skipping... web server installation"
+		echo "Skipping... Web Server installation"
 		WEB_SERVER_SKIP=true
 		break;
 	fi

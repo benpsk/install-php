@@ -5,10 +5,10 @@ PHP_SKIP=false
 
 ask_php_version() {
 
-  cat <<-EOF
-
-    ***********Disclaimer**********
+	cat <<-EOF
+		***********Disclaimer**********
 		The existing PHP will be overwritten by the new PHP!
+		*******************************
 
 		Available PHP Versions:
 
@@ -24,19 +24,6 @@ ask_php_version() {
 	EOF
 	read -p "Please select PHP Version: " php_version
 	echo
-}
-
-validate_php_version() {
-	local input="$1"
-	
-	# Define a regular expression pattern for decimal numbers
-	local pattern='^[0-9]+([.][0-9]+)?$'
-
-	if [[ "$input" =~ $pattern ]]; then
-		return 0
-	else
-		return 1
-	fi
 }
 
 while true; do

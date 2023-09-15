@@ -64,7 +64,7 @@ while "$is_php_install"; do
        	then
 		break
 	else 
-		echo "--------------------------------"
+		echo "*******************************"
 		echo	
 		echo "Please type y (or) n"
 		echo 
@@ -74,7 +74,7 @@ done
 
 if [ "$composer" = "y" ] && [ "$COMPOSER_SKIP" = "false" ]; then 
 	# remove existing composer
-	ehco "Cleaning composer..."
+	ehco "Cleaning Composer..."
 	sudo apt remove composer -y
 	
 	echo "Installing composer..."
