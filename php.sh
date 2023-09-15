@@ -1,17 +1,19 @@
 #!/bin/sh
 
-#### Disclaimer ####
-echo
-echo "***********Disclaimer**********"
-echo
-echo "The existing PHP will be overwritten by the new PHP!"
-echo
-echo "*******************************"
-echo
 
 VALID_PHP_VERSION=("8.2" "8.1" "8.0" "7.4" "7.2")
 
+PHP_SKIP=false
+
 ask_php_version() {
+	#### Disclaimer ####
+	echo
+	echo "***********Disclaimer**********"
+	echo
+	echo "The existing PHP will be overwritten by the new PHP!"
+	echo
+	echo "*******************************"
+	echo
 	echo "Available PHP Versions"
 	echo 
 	echo "1. PHP 8.2 (default)"
@@ -19,6 +21,7 @@ ask_php_version() {
 	echo "3. PHP 8.0"
 	echo "4. PHP 7.4"
 	echo "5. PHP 7.2"
+	echo "Enter 0 (zero) to skip."
 	echo "Enter 'q' to quit."
 	echo
 	read -p "Please select PHP Version: " php_version 
@@ -50,6 +53,12 @@ while true; do
 		exit 0
 	fi
 	
+	if [ "$php_version" = "0" ]; then
+		echo "Skipping... PHP"
+		PHP_SKIP=true
+		break;
+	fi
+	
 	if [ -z "$php_version" ]; then
 	    php_version="8.2"
 	fi
@@ -68,19 +77,25 @@ done
 
 php="php$php_version"
 
-## install php (ondrje php)
-### add ondrje ppa
-sudo apt-get install software-properties-common -y
-sudo add-apt-repository ppa:ondrej/php -y
-sudo apt update
 
-sudo apt install -y "$php"
+if [ "$PHP_SKIP" = "false" ]; then 
+	echo "PHP Version $php"
 
-### install php modules (Laravel Project)
-sudo apt install -y "$php"-mysql "$php"-mbstring "$php"-exif "$php"-bcmath "$php"-gd "$php"-zip "$php"-dom
+	## install php (ondrje php)
+	### add ondrje ppa
+	sudo apt-get install software-properties-common -y
+	sudo add-apt-repository ppa:ondrej/php -y
+	sudo apt update
 
-### install php-fpm by default
-sudo apt install -y "$php"-fpm
+	sudo apt install -y "$php"
+
+	### install php modules (Laravel Project)
+	sudo apt install -y "$php"-mysql "$php"-mbstring "$php"-exif "$php"-bcmath "$php"-gd "$php"-zip "$php"-dom
+
+	### install php-fpm by default
+	sudo apt install -y "$php"-fpm
+fi
+
 
 
 
