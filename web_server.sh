@@ -3,22 +3,6 @@
 WEB_SERVER_QUESTIONS=("1" "2")
 
 ask_install_web_server() {
-#	echo
-#	echo "***********Disclaimer**********"
-#	echo
-#	echo "The existing web server will be overwritten."
-#	echo
-#	echo "*******************************"
-#	echo
-#	echo
-#	echo "1. Apache2 (default)"
-#	echo "2. Nginx"
-#	echo "Enter 'q' to quit."
-#	echo 
-#	read -p "Install web server? : " web_server 
-#	echo
-
-
 	cat <<-EOF
 		***********Disclaimer**********
 		The existing web server will be overwritten.
@@ -30,8 +14,9 @@ ask_install_web_server() {
 	
 		Enter 'q' to quit.
 
-		read -p "Install web server? : " web_server
 	EOF
+	read -p "Install web server? : " web_server
+	echo
 }
 
 # validate php version input
