@@ -1,6 +1,6 @@
 # PHP Stack Server Deployment Script
-<br>
-<b>Available Services</b> 
+
+### Available Services
 
 - PHP 
   - v8.2
@@ -16,16 +16,15 @@
   - Nginx 
   - Apache2
 
-<br>
-<b>All you need to do is - </b>
+### All you need to do is - 
 
 1. Download the ipWizard.sh.
-```shell
+```sh
 wget https://raw.githubusercontent.com/benpsk/install-php/main/ipWizard.sh
 ```
 
 2. Run the script.
-```shell 
+```sh
 sudo bash ipWizard.sh
 ```
 
