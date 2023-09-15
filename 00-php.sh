@@ -1,7 +1,13 @@
 #!/bin/bash
 
-VALID_PHP_VERSION=("8.2" "8.1" "8.0" "7.4" "7.2")
-PHP_QUESTIONS=("1" "2" "3" "4" "5")
+declare -A PHP_VERSIONS
+
+PHP_VERSIONS["1"]="8.2"
+PHP_VERSIONS["2"]="8.1"
+PHP_VERSIONS["3"]="8.0"
+PHP_VERSIONS["4"]="7.4"
+PHP_VERSIONS["5"]="7.2"
+
 PHP_SKIP=false
 
 ask_php_version() {
@@ -48,10 +54,9 @@ while true; do
 		php_version="8.2"
 	fi
 
-	if [[ " ${VALID_PHP_VERSION[*]} " == *" ${php_version} "* ]]; then
-		break
-	elif [[ " ${PHP_QUESTIONS[*]} " == *" ${php_version} "* ]]; then
-		echo "Still Ok"
+	# Check if the input is equal to one of the array keys
+	if [[ -n "${PHP_VERSIONS[$php_version]}" ]]; then
+		php_version="${PHP_VERSIONS[$php_version]}"
 		break
 	else
 		echo "--------------------------------"
@@ -63,6 +68,7 @@ done
 
 php="php$php_version"
 
+echo " PHP VVVV $php"
 PHP_SKIP=true
 
 if [ "$PHP_SKIP" = "false" ]; then
