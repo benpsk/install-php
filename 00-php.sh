@@ -13,21 +13,22 @@ PHP_SKIP=false
 ask_php_version() {
 
 	cat <<-EOF
-		***********Disclaimer**********
-		The existing PHP will be overwritten by the new PHP!
 
-		*******************************
+		    ***********Disclaimer**********
+				The existing PHP will be overwritten by the new PHP!
 
-		Available PHP Versions:
+				*******************************
 
-		1. PHP 8.2 (default)
-		2. PHP 8.1
-		3. PHP 8.0
-		4. PHP 7.4
-		5. PHP 7.2
+				Available PHP Versions:
 
-		- Enter 0 (zero) to skip.
-		- Enter 'q' to quit.
+				1. PHP 8.2 (default)
+				2. PHP 8.1
+				3. PHP 8.0
+				4. PHP 7.4
+				5. PHP 7.2
+
+				- Enter 0 (zero) to skip.
+				- Enter 'q' to quit.
 
 	EOF
 	read -p "Please select PHP Version: " php_version
@@ -59,17 +60,14 @@ while true; do
 		php_version="${PHP_VERSIONS[$php_version]}"
 		break
 	else
-		echo "--------------------------------"
+		echo "***********************************"
 		echo
-		echo "Invalid PHP Version: $php_version"
+		echo "Please choose the given prefix number or the given PHP Version"
 		echo
 	fi
 done
 
 php="php$php_version"
-
-echo " PHP VVVV $php"
-PHP_SKIP=true
 
 if [ "$PHP_SKIP" = "false" ]; then
 	echo "Installing... $php"

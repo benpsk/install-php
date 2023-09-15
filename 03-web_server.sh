@@ -19,7 +19,7 @@ ask_install_web_server() {
 
 	EOF
 
-	read -pr "Install web server? : " web_server
+	read -p "Install web server? : " web_server
 	echo
 }
 
@@ -46,9 +46,9 @@ while true; do
 	if [[ " ${WEB_SERVER_QUESTIONS[*]} " == *" ${web_server} "* ]]; then
 		break
 	else
-		echo "--------------------------------"
+		echo "*******************************"
 		echo
-		echo "Please choose the prifix number only"
+		echo "Please choose the given prefix number"
 		echo
 	fi
 done
@@ -62,7 +62,9 @@ if [ "$WEB_SERVER_SKIP" = "false" ]; then
 			echo "Backup existing apache2 config to => /etc/apache2.tar.gz"
 			sudo systemctl stop apache2
 
-			sudo tar czvf /etc/apache2_backup_"$backup_date".tar.gz -C /etc/apache2
+			web_server_date=$(date +%Y%m%d)
+
+			sudo tar czvf /etc/apache2_backup_"$web_server_date".tar.gz -C /etc/apache2
 			sudo rm -rf /etc/apache2/
 		fi
 

@@ -15,15 +15,16 @@ ask_install_composer() {
 
 		***********Disclaimer**********
 		The existing composer will be overwritten by the new composer depend on the php version!
+
 		*******************************
 
-		1. y (default)
-		2. Enter 0 (zero) to skp.
-		3. Enter 'q' to quit.
+		- y (default)
+		- Enter 0 (zero) to skp.
+		- Enter 'q' to quit.
 
 	EOF
 
-	read -pr "Install Composer? (y/n) : " composer
+	read -p "Install Composer? (y/n) : " composer
 	echo
 }
 
@@ -63,7 +64,7 @@ while "$is_php_install"; do
 	if [[ " ${COMPOSER_QUESTIONS[*]} " == *" ${composer} "* ]]; then
 		break
 	else
-		echo "*******************************"
+		echo "***********************************"
 		echo
 		echo "Please type y (or) n"
 		echo
