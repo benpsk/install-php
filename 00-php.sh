@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 VALID_PHP_VERSION=("8.2" "8.1" "8.0" "7.4" "7.2")
 PHP_SKIP=false
@@ -22,46 +22,44 @@ ask_php_version() {
 		Enter 'q' to quit.
 
 	EOF
-	read -p "Please select PHP Version: " php_version
+	read -pr "Please select PHP Version: " php_version
 	echo
 }
 
 while true; do
 	ask_php_version
 
-	php_version=$(echo $php_version | tr "[A-Z]" "[a-z]")
+	php_version=$(echo "$php_version" | tr "[:upper:]" "[:lower:]")
 
 	if [ "$php_version" = "q" ]; then
 		echo "Goodbye, See you next time!"
 		exit 0
 	fi
-	
+
 	if [ "$php_version" = "0" ]; then
 		echo "Skipping... PHP installation"
 		PHP_SKIP=true
-		break;
-	fi
-	
-	if [ -z "$php_version" ]; then
-	    php_version="8.2"
+		break
 	fi
 
-	if [[ " ${VALID_PHP_VERSION[*]} " == *" ${php_version} "* ]]
-  then
+	if [ -z "$php_version" ]; then
+		php_version="8.2"
+	fi
+
+	if [[ " ${VALID_PHP_VERSION[*]} " == *" ${php_version} "* ]]; then
 		echo "Valid PHP Version"
 		break
-	else 
+	else
 		echo "--------------------------------"
-		echo	
+		echo
 		echo "Invalid PHP Version: $php_version"
-		echo 
+		echo
 	fi
 done
 
 php="php$php_version"
 
-
-if [ "$PHP_SKIP" = "false" ]; then 
+if [ "$PHP_SKIP" = "false" ]; then
 	echo "Installing... $php"
 
 	## install php (ondrje php)
@@ -78,7 +76,3 @@ if [ "$PHP_SKIP" = "false" ]; then
 	### install php-fpm by default
 	sudo apt install -y "$php"-fpm
 fi
-
-
-
-
