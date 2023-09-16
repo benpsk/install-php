@@ -18,7 +18,7 @@
 
 ### All you need to do is - 
 
-1. Download the ipWizard.sh.
+1. Download the iMagic.sh.
 ```sh
 wget https://raw.githubusercontent.com/benpsk/install-php/main/iMagic.sh
 ```
