@@ -4,6 +4,37 @@
 ##
 ##
 ##
+## *************** START COLOR SECTION ****************
+##
+##
+##
+
+## Reset
+RESET='\033[0m'
+
+## Regular Colors
+BLACK='\033[0;30m'
+RED='\033[0;31m'  
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+BLUE='\033[0;34m'  
+PURPLE='\033[0;35m'
+CYAN='\033[0;36m'  
+WHITE='\033[0;37m' 
+
+##
+##
+## *************** END COLOR SECTION ****************
+##
+##
+##
+##
+##
+
+##
+##
+##
+##
 ## *************** START COMMON FUNCTION SECTION ****************
 ##
 ##
@@ -101,27 +132,33 @@ PHP_SKIP=false
 
 ask_php_version() {
 
-	cat <<-EOF
+	echo -e "$(
+		cat <<-EOM
+			${GREEN}
 
-		***********Disclaimer**********
 
-		The existing PHP will be overwritten by the new PHP!
+	
+			***********Disclaimer**********
 
-		*******************************
+			The existing PHP will be overwritten by the new PHP!
 
-		Available PHP Versions:
+			*******************************
 
-		1. PHP 8.2 (default)
-		2. PHP 8.1
-		3. PHP 8.0
-		4. PHP 7.4
-		5. PHP 7.2
+			Available PHP Versions:
 
-		- Enter 0 (zero) to skip.
-		- Enter 'q' to quit.
+			1. PHP 8.2 (default)
+			2. PHP 8.1
+			3. PHP 8.0
+			4. PHP 7.4
+			5. PHP 7.2
 
-	EOF
-	read -p "Please select PHP Version: " php_version
+			- Enter 0 (zero) to skip.
+			- Enter 'q' to quit.
+			${RESET} 
+		EOM
+	)"
+	echo -ne "${YELLOW}Please select PHP Version: ${RESET}" 
+	read php_version
 	echo
 }
 
@@ -150,10 +187,16 @@ while true; do
 		php_version="${PHP_VERSIONS[$php_version]}"
 		break
 	else
-		echo "***********************************"
-		echo
-		echo "Please choose the given prefix number or the given PHP Version"
-		echo
+		echo -e "$(
+			cat <<-EOM 
+ 			${RED}
+
+			***********************************
+ 
+			Please choose the given prefix number or the given PHP Version
+			${REST}
+			EOM
+		)"
 	fi
 done
 
@@ -216,21 +259,26 @@ COMPOSER_SKIP=false
 
 ask_install_composer() {
 
-	cat <<-EOF
+	echo -e "$(
+		cat <<-EOM
+			${GREEN}
 
-		***********Disclaimer**********
 
-		The existing composer will be overwritten by the new composer depend on the php version!
 
-		*******************************
+			***********Disclaimer**********
 
-		- y (default)
-		- Enter 0 (zero) to skip.
-		- Enter 'q' to quit.
+			The existing composer will be overwritten by the new composer depend on the php version!
 
-	EOF
+			*******************************
 
-	read -p "Install Composer? (y/n) : " composer
+			- y (default)
+			- Enter 0 (zero) to skip.
+			- Enter 'q' to quit.
+			${RESET}
+		EOM
+	)"
+	echo -ne "${YELLOW}Install Composer? (y/n) : ${RESET}"
+	read composer
 	echo
 }
 
@@ -257,10 +305,16 @@ while "$is_php_install"; do
 	if [[ " ${COMPOSER_QUESTIONS[*]} " == *" ${composer} "* ]]; then
 		break
 	else
-		echo "***********************************"
-		echo
-		echo "Please type y (or) n"
-		echo
+		echo -e "$(
+			cat <<-EOM
+				${RED}
+
+				***********************************
+
+				Please type y (or) n
+				${RESET}
+			EOM
+		)"
 	fi
 done
 
@@ -301,23 +355,28 @@ WEB_SERVER_QUESTIONS=("1" "2")
 WEB_SERVER_SKIP=false
 
 ask_install_web_server() {
-	cat <<-EOF
+	echo -e "$(
+		cat <<-EOM
+			${GREEN}
 
-		***********Disclaimer**********
 
-		The existing web server will be overwritten.
 
-		*******************************
+			***********Disclaimer**********
 
-		1. Apache2 (default)
-		2. Nginx
+			The existing web server will be overwritten.
 
-		- Enter 0 (zero) to skip.
-		- Enter 'q' to quit.
+			*******************************
 
-	EOF
+			1. Apache2 (default)
+			2. Nginx
 
-	read -p "Install web server? : " web_server
+			- Enter 0 (zero) to skip.
+			- Enter 'q' to quit.
+			${RESET}
+		EOM
+	)"
+	echo "${YELLOW}Install web server? : ${RESET}"
+	read web_server
 	echo
 }
 
@@ -344,10 +403,16 @@ while true; do
 	if [[ " ${WEB_SERVER_QUESTIONS[*]} " == *" ${web_server} "* ]]; then
 		break
 	else
-		echo "*******************************"
-		echo
-		echo "Please choose the given prefix number"
-		echo
+		echo -e "$(
+			cat <<-EOM
+				${RED}
+
+				*******************************
+
+				Please choose the given prefix number
+				${RESET}
+			EOM		
+		)"
 	fi
 done
 
@@ -421,22 +486,28 @@ DATABASE_SKIP=false
 
 ask_install_database() {
 
-	cat <<-EOF
+	echo -e "$(
+		cat <<-EOM
+			${GREEN}
 
-		***********Disclaimer**********
 
-		The existing database will be overwrite.
 
-		*******************************
+			***********Disclaimer**********
 
-		1. MySQL(default)
-		2. MariaDB 
+			The existing database will be overwrite.
 
-		- Enter 0 (zero) to skip."
-		- Enter 'q' to quit."
+			*******************************
 
-	EOF
-	read -p "Install database ? : " database
+			1. MySQL(default)
+			2. MariaDB 
+
+			- Enter 0 (zero) to skip."
+			- Enter 'q' to quit."
+			${RED}
+		EOM
+	)"
+	echo -ne "${YELLOW}Install database ?: ${RESET}"
+	read database
 	echo
 }
 
@@ -463,10 +534,16 @@ while true; do
 	if [[ " ${DATABASE_QUESTIONS[*]} " == *" ${database} "* ]]; then
 		break
 	else
-		echo "*******************************"
-		echo
-		echo "Please choose the given prefix number"
-		echo
+		echo -e "$(
+			cat <<-EOM
+				${RED}
+
+				*******************************
+
+				Please choose the given prefix number
+				${RESET}
+			EOM
+		)"
 	fi
 done
 

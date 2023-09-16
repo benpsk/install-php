@@ -111,28 +111,29 @@ echo -e "${BG_GREEN} This is a green background. ${RESET}"
 
 ask_install_composer() {
     echo -e "$(
-	cat <<-EOM
-        ${GREEN}                                                                                               
-		***********Disclaimer**********
+        cat <<-EOM
+            ${GREEN}                                                                                               
+            ***********Disclaimer**********
 
-		The existing composer will be overwritten by the new composer depend on the php version!
+            The existing composer will be overwritten by the new composer depend on the php version!
 
-		*******************************                                                         
+            *******************************                                                         
 
-		- y (default)
-		- Enter 0 (zero) to skip.
-		- Enter 'q' to quit.
-        
-	EOM
+            - y (default)
+            - Enter 0 (zero) to skip.
+            - Enter 'q' to quit.
+                    
+EOM
     )"
 
-    echo -e "Install Composer? (y/n) : ${RESET}"
-    echo -e "${YELLOW}Install Composer? (y/n) : ${RESET}"
-    echo -e "${RED}Install Composer? (y/n) : ${RESET}"
-    echo -e "${GREEN}Install Composer? (y/n) : ${RESET}"
-    echo -e "${PURPLE}Install Composer? (y/n) : ${RESET}"
-    echo -e "${CYAN}Install Composer? (y/n) : ${RESET}"
-	echo "$composer"
+    echo -ne "Install Composer? (y/n) : ${RESET}"
+    # echo -e "${YELLOW}Install Composer? (y/n) : ${RESET}"
+    # echo -e "${RED}Install Composer? (y/n) : ${RESET}"
+    # echo -e "${GREEN}Install Composer? (y/n) : ${RESET}"
+    # echo -e "${PURPLE}Install Composer? (y/n) : ${RESET}"
+    # echo -e "${CYAN}Install Composer? (y/n) : ${RESET}"
+	read composer
+    echo "$composer"
 }
 
 ask_install_composer
