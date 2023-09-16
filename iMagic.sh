@@ -22,6 +22,16 @@ PURPLE='\033[0;35m'
 CYAN='\033[0;36m'  
 WHITE='\033[0;37m' 
 
+## Background
+ON_BLACK='\033[40m'
+ON_RED='\033[41m'  
+ON_GREEN='\033[42m'
+ON_YELLOW='\033[43m'
+ON_BLUE='\033[44m'  
+ON_PURPLE='\033[45m'
+ON_CYAN='\033[46m'  
+ON_WHITE='\033[47m' 
+
 ##
 ##
 ## *************** END COLOR SECTION ****************
@@ -168,12 +178,12 @@ while true; do
 	php_version=$(echo "$php_version" | tr "[:upper:]" "[:lower:]")
 
 	if [ "$php_version" = "q" ]; then
-		echo "Goodbye, See you next time!"
+		echo -e "${ON_GREEN}Goodbye, See you next time!${RESET}"
 		exit 0
 	fi
 
 	if [ "$php_version" = "0" ]; then
-		echo "Skipping... PHP installation!"
+		echo -e "${YELLOW}Skipping... PHP installation!${RESET}"
 		PHP_SKIP=true
 		break
 	fi
@@ -411,7 +421,7 @@ while true; do
 
 				Please choose the given prefix number
 				${RESET}
-			EOM		
+			EOM
 		)"
 	fi
 done
@@ -612,6 +622,6 @@ fi
 ## *************** END DATABASE SECTION ****************
 ##
 ##
-##
+##v
 ##
 ##
