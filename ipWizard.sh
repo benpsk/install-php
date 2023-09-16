@@ -12,19 +12,57 @@
 backup_and_remove_apache2() {
 
 	if dpkg -l | grep -q "apache2"; then
+
 		echo "Backup existing apache2 config to => /etc/apache2.tar.gz"
 		sudo systemctl stop apache2
 
-		web_server_date=$(date +%Y%m%d)
+		apache2_date=$(date +%Y%m%d)
 
-		sudo tar czvf /etc/apache2_backup_"$web_server_date".tar.gz -C /etc/apache2
+		sudo tar czvf /etc/apache2_backup_"$apache2_date".tar.gz -C /etc/apache2
 
-		sudo apt-get remove apache2 -y
+		sudo apt-get purge *apache2* -y
+
+		sudo apt autoremove -y
 
 		sudo rm -rf /etc/apache2/
 	fi
 }
 
+backup_and_remove_nginx() {
+
+	if dpkg -l | grep -q "nginx"; then
+
+		echo "Backup existing nginx config to => /etc/nginx.tar.gz"
+		sudo systemctl stop nginx
+
+		nginx_date=$(date +%Y%m%d)
+
+		sudo tar czvf /etc/nginx_backup_"$nginx_date".tar.gz -C /etc/nginx
+
+		sudo apt-get purge *nginx* -y
+
+		sudo apt autoremove -y
+
+		sudo rm -rf /etc/nginx/
+	fi
+
+}
+
+stop_nginx() {
+
+	if dpkg -l | grep -q "nginx"; then
+		sudo systemctl stop nginx
+		sudo systemctl disable nginx
+	fi
+}
+
+stop_apache2() {
+
+	if dpkg -l | grep -q "apache2"; then
+		sudo systemctl stop apache2
+		sudo systemctl disable apache2
+	fi
+}
 ##
 ##
 ##
@@ -59,8 +97,8 @@ ask_php_version() {
 
 	cat <<-EOF
 
-		    ***********Disclaimer**********
-			
+		  ***********Disclaimer**********
+
 			The existing PHP will be overwritten by the new PHP!
 
 			*******************************
@@ -98,7 +136,7 @@ while true; do
 	fi
 
 	if [ -z "$php_version" ]; then
-		php_version="8.2"
+		php_version="1"
 	fi
 
 	# Check if the input is equal to one of the array keys
@@ -120,6 +158,9 @@ if [ "$PHP_SKIP" = "false" ]; then
 
 	### check for apache2
 	backup_and_remove_apache2
+
+	## stop nginx
+	stop_nginx
 
 	## install php (ondrje php) ### add ondrje ppa
 	sudo apt-get install software-properties-common -y
@@ -167,7 +208,7 @@ ask_install_composer() {
 	cat <<-EOF
 
 		***********Disclaimer**********
-		
+
 		The existing composer will be overwritten by the new composer depend on the php version!
 
 		*******************************
@@ -264,11 +305,11 @@ WEB_SERVER_SKIP=false
 ask_install_web_server() {
 	cat <<-EOF
 
-		    ***********Disclaimer**********
-			
+		  ***********Disclaimer**********
+
 			The existing web server will be overwritten.
 
-		    *******************************
+		  *******************************
 
 			1. Apache2 (default)
 			2. Nginx
@@ -318,36 +359,29 @@ if [ "$WEB_SERVER_SKIP" = "false" ]; then
 	if [ "$web_server" = "1" ]; then
 
 		## disable nginx if installed (prevent from port 80)
-		if dpkg -l | grep -q "nginx"; then
-			sudo systemctl stop nginx
+		stop_nginx
+
+		# ondrje php already install apache2 by default
+		if [ "$PHP_SKIP" = "true" ]; then
+
+			backup_and_remove_apache2
+
+			# install apache2 and dependencies
+			sudo apt-get install apache2 -y
+
+			php_version=$(php -v 2>&1 | grep -oP "(?<=PHP )([0-9]+\.[0-9]+)")
+
+			if [ -n "$php_version" ]; then
+				sudo apt-get install libapache2-mod-php"$php_version"
+				sudo a2enmod php"$php_version"
+			fi
+			sudo a2enmod rewrite
 		fi
-
-		backup_and_remove_apache2
-
-		# install apache2 and dependencies
-		sudo apt-get install apache2 -y
-
-		php_version=$(php -v 2>&1 | grep -oP "(?<=PHP )([0-9]+\.[0-9]+)")
-
-		if [ -n "$php_version" ]; then
-			sudo apt-get install libapache2-mod-php"$php_version"
-			sudo a2enmod php"$php_version"
-		fi
-		sudo a2enmod rewrite
-
 	else
 
-		## if apache2 is install stop
-		if dpkg -l | grep -q "apache2"; then
-			sudo systemctl stop apache2
-		fi
+		stop_apache2
 
-		### install nginx
-		if dpkg -l | grep -q "nginx"; then
-			echo "Backup existing nginx config to => /etc/nginx.bak"
-			sudo systemctl stop nginx
-			sudo mv /etc/nginx /etc/nginx.bak
-		fi
+		backup_and_remove_nginx
 
 		sudo apt-get install curl gnupg2 ca-certificates lsb-release ubuntu-keyring -y
 		curl https://nginx.org/keys/nginx_signing.key | gpg --dearmor |
@@ -389,17 +423,17 @@ ask_install_database() {
 
 	cat <<-EOF
 
-		    ***********Disclaimer**********
-		    
+		  ***********Disclaimer**********
+
 			The existing database will be overwrite.
 
-		    *******************************
+		  *******************************
 
-		    1. MySQL(default)
-		    2. Mariadb
+		  1. MySQL(default)
+		  2. MariaDB 
 
-		    - Enter 0 (zero) to skip."
-		    - Enter 'q' to quit."
+		  - Enter 0 (zero) to skip."
+		  - Enter 'q' to quit."
 
 	EOF
 	read -p "Install database ? : " database
@@ -442,6 +476,9 @@ if [ "$DATABASE_SKIP" = "false" ]; then
 
 	db_backup() {
 
+		echo "Backup old mysql data to => /var/lib/mysql_backup.tar.gz"
+		echo "Backup old mysql config to => /etc/mysql_backup.tar.gz"
+
 		db_date=$(date +%Y%m%d)
 
 		sudo tar czvf /var/lib/mysql_backup_"$db_date".tar.gz -C /var/lib/mysql
@@ -450,25 +487,20 @@ if [ "$DATABASE_SKIP" = "false" ]; then
 
 	### backup data
 	if dpkg -l | grep -q "mariadb"; then
-		echo "Backup old mysql data to => /var/lib/mysql_backup.tar.gz"
-		echo "Backup old mysql config to => /etc/mysql_backup.tar.gz"
 		sudo systemctl stop mariadb
 
 		db_backup
 
-		sudo apt-get purge mariadb-server -y
+		sudo apt-get purge *mariadb-server* -y
+		sudo apt-get autoremove -y
 
 	elif dpkg -l | grep -q "mysql"; then
-		echo "Backup old mysql data to => /var/lib/mysql_backup.tar.gz"
-		echo "Backup old mysql config to => /etc/mysql_backup.tar.gz"
 		sudo systemctl stop mysql
 
 		db_backup
 
-		sudo apt-get purge mysql-server* -y
-		sudo apt-get install -f
+		sudo apt-get purge *mysql-server* -y
 		sudo apt-get autoremove -y
-
 	fi
 
 	sudo rm -rf /var/lib/mysql/ /etc/mysql/
