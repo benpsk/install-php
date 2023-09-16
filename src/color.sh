@@ -126,12 +126,11 @@ ask_install_composer() {
 EOM
     )"
 
-    echo -ne "Install Composer? (y/n) : ${RESET}"
-    # echo -e "${YELLOW}Install Composer? (y/n) : ${RESET}"
-    # echo -e "${RED}Install Composer? (y/n) : ${RESET}"
-    # echo -e "${GREEN}Install Composer? (y/n) : ${RESET}"
-    # echo -e "${PURPLE}Install Composer? (y/n) : ${RESET}"
-    # echo -e "${CYAN}Install Composer? (y/n) : ${RESET}"
+    echo -e "${YELLOW}Install Composer? (y/n) : ${RESET}"
+    echo -e "${RED}Install Composer? (y/n) : ${RESET}"
+    echo -e "${GREEN}Install Composer? (y/n) : ${RESET}"
+    echo -e "${PURPLE}Install Composer? (y/n) : ${RESET}"
+    echo -e "${CYAN}Install Composer? (y/n) : ${RESET}"
 	read composer
     echo "$composer"
 }

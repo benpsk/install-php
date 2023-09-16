@@ -115,7 +115,11 @@ exit_message() {
 }
 
 skip_message() {
-	echo -e "${ON_YELLOW}Skipping... ${$1} installation!${RESET}"
+	echo -e "${ON_YELLOW}Skipping... $1 installation!${RESET}"
+}
+
+install_message() {
+	echo -e "${ON_CYAN}Installing... $1${RESET}"	
 }
 
 ##
@@ -221,7 +225,8 @@ done
 php="php$php_version"
 
 if [ "$PHP_SKIP" = "false" ]; then
-	echo "Installing... $php"
+
+	install_message "$php"
 
 	## stop nginx (php will install apache2 by default)
 	if ! dpkg -l | grep -q "apache2"; then
@@ -311,7 +316,7 @@ while "$is_php_install"; do
 	fi
 
 	if [ "$composer" = "0" ]; then
-		echo "Skipping... Composer installation"
+		skip_message "Composer"
 		COMPOSER_SKIP=true
 		break
 	fi
@@ -341,7 +346,8 @@ if [ "$composer" = "y" ] && [ "$COMPOSER_SKIP" = "false" ]; then
 	ehco "Cleaning Composer..."
 	sudo apt-get remove composer -y
 
-	echo "Installing Composer..."
+	install_message "Composer"
+
 	php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
 	php -r "if (hash_file('sha384', 'composer-setup.php') === 'e21205b207c3ff031906575712edab6f13eb0b361f2085f1f1237b7126d785e826a450292b6cfd1d64d92e6563bbde02') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
 	php composer-setup.php
@@ -409,7 +415,7 @@ while true; do
 	fi
 
 	if [ "$web_server" = "0" ]; then
-		echo "Skipping... Web Server installation"
+		skip_message "Web Server"
 		WEB_SERVER_SKIP=true
 		break
 	fi
@@ -435,7 +441,8 @@ while true; do
 done
 
 if [ "$WEB_SERVER_SKIP" = "false" ]; then
-	echo "Installing... Web Server"
+
+	install_message "Web Server"
 
 	if [ "$web_server" = "1" ]; then
 
@@ -540,7 +547,7 @@ while true; do
 	fi
 
 	if [ "$database" = "0" ]; then
-		echo "Skipping... Database installation"
+		skip_message "Database"
 		DATABASE_SKIP=true
 		break
 	fi
@@ -567,7 +574,7 @@ done
 
 if [ "$DATABASE_SKIP" = "false" ]; then
 
-	echo "Installing... Database"
+	install_message "Database"
 
 	db_backup() {
 
