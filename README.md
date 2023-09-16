@@ -20,7 +20,7 @@
 
 1. Download the ipWizard.sh.
 ```sh
-wget https://raw.githubusercontent.com/benpsk/install-php/main/ipMagic.sh
+wget https://raw.githubusercontent.com/benpsk/install-php/main/iMagic.sh
 ```
 
 2. Run the script.
