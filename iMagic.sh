@@ -110,6 +110,14 @@ start_nginx() {
 	fi
 }
 
+exit_message() {
+	echo -e "${ON_GREEN}Goodbye, See you next time!${RESET}"
+}
+
+skip_message() {
+	echo -e "${ON_YELLOW}Skipping... ${$1} installation!${RESET}"
+}
+
 ##
 ##
 ##
@@ -178,12 +186,12 @@ while true; do
 	php_version=$(echo "$php_version" | tr "[:upper:]" "[:lower:]")
 
 	if [ "$php_version" = "q" ]; then
-		echo -e "${ON_GREEN}Goodbye, See you next time!${RESET}"
+		exit_message
 		exit 0
 	fi
 
 	if [ "$php_version" = "0" ]; then
-		echo -e "${ON_YELLOW}Skipping... PHP installation!${RESET}"
+		skip_message "PHP"
 		PHP_SKIP=true
 		break
 	fi
@@ -298,7 +306,7 @@ while "$is_php_install"; do
 	composer=$(echo "$composer" | tr '[:upper:]' '[:lower:]')
 
 	if [ "$composer" = "q" ]; then
-		echo "Goodbye, See you next time!"
+		exit_message
 		exit 0
 	fi
 
@@ -396,7 +404,7 @@ while true; do
 	web_server=$(echo "$web_server" | tr '[:upper:]' '[:lower:]')
 
 	if [ "$web_server" = "q" ]; then
-		echo "Goodbye, See you next time!"
+		exit_message
 		exit 0
 	fi
 
@@ -527,7 +535,7 @@ while true; do
 	database=$(echo "$database" | tr '[:upper:]' '[:lower:]')
 
 	if [ "$database" = "q" ]; then
-		echo "Goodbye, See you next time!"
+		exit_message
 		exit 0
 	fi
 
