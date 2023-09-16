@@ -56,7 +56,16 @@ backup_and_remove_apache2() {
 
 	if dpkg -l | grep -q "apache2"; then
 
-		echo "Backup existing apache2 config to => /etc/apache2.tar.gz"
+		echo -e "$(
+			cat <<-EOM
+				${ON_YELLOW}
+
+				Backup existing apache2 config to 			=> /etc/apache2_backup_$DATE.tar.gz
+
+				${RESET}
+			EOM
+		)"
+
 		sudo systemctl stop apache2
 
 		sudo tar czvf /etc/apache2_backup_"$DATE".tar.gz -C /etc/apache2
@@ -73,7 +82,16 @@ backup_and_remove_nginx() {
 
 	if dpkg -l | grep -q "nginx"; then
 
-		echo "Backup existing nginx config to => /etc/nginx.tar.gz"
+		echo -e "$(
+			cat <<-EOM
+				${ON_YELLOW}
+
+				Backup existing nginx config to 			=> /etc/nginx_backup_$DATE.tar.gz
+
+				${RESET}
+			EOM
+		)"
+
 		sudo systemctl stop nginx
 
 		sudo tar czvf /etc/nginx_backup_"$DATE".tar.gz -C /etc/nginx
@@ -403,7 +421,7 @@ ask_install_web_server() {
 			${RESET}
 		EOM
 	)"
-	echo "${YELLOW}Install web server? : ${RESET}"
+	echo -e "${YELLOW}Install web server? : ${RESET}"
 	read web_server
 	echo
 }
@@ -582,8 +600,16 @@ if [ "$DATABASE_SKIP" = "false" ]; then
 
 	db_backup() {
 
-		echo "Backup old mysql data to => /var/lib/mysql_backup.tar.gz"
-		echo "Backup old mysql config to => /etc/mysql_backup.tar.gz"
+		echo -e "$(
+			cat <<-EOM
+				${ON_YELLOW}
+				
+				Backup old mysql data to 		=> /var/lib/mysql_backup_$DATE.tar.gz
+				Backup old mysql config to 		=> /etc/mysql_backup_$DATE.tar.gz
+
+				${RESET}
+			EOM
+		)"
 
 		sudo tar czvf /var/lib/mysql_backup_"$DATE".tar.gz -C /var/lib/mysql
 		sudo tar czvf /etc/mysql/mysql_backup_"$DATE".tar.gz -C /etc/mysql
