@@ -9,6 +9,8 @@
 ##
 ##
 
+DATE=$(date +%Y%m%d)
+
 backup_and_remove_apache2() {
 
 	if dpkg -l | grep -q "apache2"; then
@@ -16,11 +18,9 @@ backup_and_remove_apache2() {
 		echo "Backup existing apache2 config to => /etc/apache2.tar.gz"
 		sudo systemctl stop apache2
 
-		apache2_date=$(date +%Y%m%d)
+		sudo tar czvf /etc/apache2_backup_"$DATE".tar.gz -C /etc/apache2
 
-		sudo tar czvf /etc/apache2_backup_"$apache2_date".tar.gz -C /etc/apache2
-
-		sudo apt-get purge *apache2* -y
+		sudo apt-get purge apache2* libapache2-mod-php* -y
 
 		sudo apt autoremove -y
 
@@ -35,11 +35,9 @@ backup_and_remove_nginx() {
 		echo "Backup existing nginx config to => /etc/nginx.tar.gz"
 		sudo systemctl stop nginx
 
-		nginx_date=$(date +%Y%m%d)
+		sudo tar czvf /etc/nginx_backup_"$DATE".tar.gz -C /etc/nginx
 
-		sudo tar czvf /etc/nginx_backup_"$nginx_date".tar.gz -C /etc/nginx
-
-		sudo apt-get purge *nginx* -y
+		sudo apt-get purge nginx* -y
 
 		sudo apt autoremove -y
 
@@ -97,22 +95,22 @@ ask_php_version() {
 
 	cat <<-EOF
 
-		  ***********Disclaimer**********
+		***********Disclaimer**********
 
-			The existing PHP will be overwritten by the new PHP!
+		The existing PHP will be overwritten by the new PHP!
 
-			*******************************
+		*******************************
 
-			Available PHP Versions:
+		Available PHP Versions:
 
-			1. PHP 8.2 (default)
-			2. PHP 8.1
-			3. PHP 8.0
-			4. PHP 7.4
-			5. PHP 7.2
+		1. PHP 8.2 (default)
+		2. PHP 8.1
+		3. PHP 8.0
+		4. PHP 7.4
+		5. PHP 7.2
 
-			- Enter 0 (zero) to skip.
-			- Enter 'q' to quit.
+		- Enter 0 (zero) to skip.
+		- Enter 'q' to quit.
 
 	EOF
 	read -p "Please select PHP Version: " php_version
@@ -174,6 +172,12 @@ if [ "$PHP_SKIP" = "false" ]; then
 
 	### install php-fpm by default
 	sudo apt-get install -y "$php"-fpm
+
+	### set installed php to default php
+	sudo update-alternatives --set php /usr/bin/"$php"
+	sudo a2enmod "$php"
+	sudo a2enmod rewrite
+
 fi
 ##
 ##
@@ -194,7 +198,7 @@ fi
 ##
 ##
 ##
-is_php_install=""
+is_php_install=false
 
 if command -v php &>/dev/null; then
 	is_php_install=true
@@ -221,19 +225,6 @@ ask_install_composer() {
 
 	read -p "Install Composer? (y/n) : " composer
 	echo
-}
-
-validate_php_version() {
-	local input="$1"
-
-	# Define a regular expression pattern for decimal numbers
-	local pattern='^[0-9]+([.][0-9]+)?$'
-
-	if [[ "$input" =~ $pattern ]]; then
-		return 0
-	else
-		return 1
-	fi
 }
 
 while "$is_php_install"; do
@@ -305,17 +296,17 @@ WEB_SERVER_SKIP=false
 ask_install_web_server() {
 	cat <<-EOF
 
-		  ***********Disclaimer**********
+		***********Disclaimer**********
 
-			The existing web server will be overwritten.
+		The existing web server will be overwritten.
 
-		  *******************************
+		*******************************
 
-			1. Apache2 (default)
-			2. Nginx
+		1. Apache2 (default)
+		2. Nginx
 
-			- Enter 0 (zero) to skip.
-			- Enter 'q' to quit.
+		- Enter 0 (zero) to skip.
+		- Enter 'q' to quit.
 
 	EOF
 
@@ -369,11 +360,11 @@ if [ "$WEB_SERVER_SKIP" = "false" ]; then
 			# install apache2 and dependencies
 			sudo apt-get install apache2 -y
 
-			php_version=$(php -v 2>&1 | grep -oP "(?<=PHP )([0-9]+\.[0-9]+)")
+			current_php_version=$(php -v 2>&1 | grep -oP "(?<=PHP )([0-9]+\.[0-9]+)")
 
-			if [ -n "$php_version" ]; then
-				sudo apt-get install libapache2-mod-php"$php_version"
-				sudo a2enmod php"$php_version"
+			if [ -n "$current_php_version" ]; then
+				sudo apt-get install libapache2-mod-php"$current_php_version"
+				sudo a2enmod php"$current_php_version"
 			fi
 			sudo a2enmod rewrite
 		fi
@@ -388,7 +379,7 @@ if [ "$WEB_SERVER_SKIP" = "false" ]; then
 			sudo tee /usr/share/keyrings/nginx-archive-keyring.gpg >/dev/null
 		gpg --dry-run --quiet --no-keyring --import --import-options import-show /usr/share/keyrings/nginx-archive-keyring.gpg
 		echo "deb [signed-by=/usr/share/keyrings/nginx-archive-keyring.gpg] \
-    http://nginx.org/packages/ubuntu $(lsb_release -cs) nginx" |
+    		http://nginx.org/packages/ubuntu $(lsb_release -cs) nginx" |
 			sudo tee /etc/apt/sources.list.d/nginx.list
 
 		sudo apt-get update
@@ -423,17 +414,17 @@ ask_install_database() {
 
 	cat <<-EOF
 
-		  ***********Disclaimer**********
+		***********Disclaimer**********
 
-			The existing database will be overwrite.
+		The existing database will be overwrite.
 
-		  *******************************
+		*******************************
 
-		  1. MySQL(default)
-		  2. MariaDB 
+		1. MySQL(default)
+		2. MariaDB 
 
-		  - Enter 0 (zero) to skip."
-		  - Enter 'q' to quit."
+		- Enter 0 (zero) to skip."
+		- Enter 'q' to quit."
 
 	EOF
 	read -p "Install database ? : " database
@@ -479,10 +470,8 @@ if [ "$DATABASE_SKIP" = "false" ]; then
 		echo "Backup old mysql data to => /var/lib/mysql_backup.tar.gz"
 		echo "Backup old mysql config to => /etc/mysql_backup.tar.gz"
 
-		db_date=$(date +%Y%m%d)
-
-		sudo tar czvf /var/lib/mysql_backup_"$db_date".tar.gz -C /var/lib/mysql
-		sudo tar czvf /etc/mysql/mysql_backup_"$db_date".tar.gz -C /etc/mysql
+		sudo tar czvf /var/lib/mysql_backup_"$DATE".tar.gz -C /var/lib/mysql
+		sudo tar czvf /etc/mysql/mysql_backup_"$DATE".tar.gz -C /etc/mysql
 	}
 
 	### backup data
@@ -491,7 +480,7 @@ if [ "$DATABASE_SKIP" = "false" ]; then
 
 		db_backup
 
-		sudo apt-get purge *mariadb-server* -y
+		sudo apt-get purge mariadb* -y
 		sudo apt-get autoremove -y
 	fi
 
@@ -500,7 +489,7 @@ if [ "$DATABASE_SKIP" = "false" ]; then
 
 		db_backup
 
-		sudo apt-get purge *mysql-server* -y
+		sudo apt-get purge mysql* -y
 		sudo apt-get autoremove -y
 	fi
 
@@ -514,17 +503,18 @@ if [ "$DATABASE_SKIP" = "false" ]; then
 		sudo apt-get install apt-transport-https curl -y
 		sudo mkdir -p /etc/apt/keyrings
 		sudo curl -o /etc/apt/keyrings/mariadb-keyring.pgp 'https://mariadb.org/mariadb_release_signing_key.pgp'
-		sudo sh -c "echo \"# MariaDB 11.1 repository list - created 2023-09-11 22:00 UTC
-    # https://mariadb.org/download/
-    X-Repolib-Name: MariaDB
-    Types: deb
-    # deb.mariadb.org is a dynamic mirror if your preferred mirror goes offline. See https://mariadb.org/mirrorbits/ for details.
-    # URIs: https://deb.mariadb.org/11.1/ubuntu
-    URIs: https://mirror.kku.ac.th/mariadb/repo/11.1/ubuntu
-    Suites: $(lsb_release -cs)
-    Components: main main/debug
-    Signed-By: /etc/apt/keyrings/mariadb-keyring.pgp \" >/etc/apt/sources.list.d/mariadb.sources"
-
+		sudo sh -c 'cat <<-EOF >/etc/apt/sources.list.d/mariadb.sources
+			# MariaDB 11.1 repository list - created 2023-09-11 22:00 UTC
+			# https://mariadb.org/download/
+			X-Repolib-Name: MariaDB
+			Types: deb
+			# deb.mariadb.org is a dynamic mirror if your preferred mirror goes offline. See https://mariadb.org/mirrorbits/ for details.
+			# URIs: https://deb.mariadb.org/11.1/ubuntu
+			URIs: https://mirror.kku.ac.th/mariadb/repo/11.1/ubuntu
+			Suites: $(lsb_release -cs)
+			Components: main main/debug
+			Signed-By: /etc/apt/keyrings/mariadb-keyring.pgp
+			EOF'
 		sudo apt-get update -y
 		sudo apt-get install mariadb-server -y
 	fi
