@@ -61,6 +61,14 @@ stop_apache2() {
 		sudo systemctl disable apache2
 	fi
 }
+
+start_nginx() {
+	if dpkg -l | grep -q "nginx"; then 
+		sudo systemctl start nginx
+		sudo systemctl enable nginx
+	fi
+}
+
 ##
 ##
 ##
@@ -381,6 +389,8 @@ if [ "$WEB_SERVER_SKIP" = "false" ]; then
 
 		sudo apt-get update
 		sudo apt-get install nginx -y
+
+		start_nginx
 	fi
 fi
 
