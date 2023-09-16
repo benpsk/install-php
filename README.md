@@ -20,12 +20,12 @@
 
 1. Download the ipWizard.sh.
 ```sh
-wget https://raw.githubusercontent.com/benpsk/install-php/main/ipWizard.sh
+wget https://raw.githubusercontent.com/benpsk/install-php/main/ipMagic.sh
 ```
 
 2. Run the script.
 ```sh
-sudo bash ipWizard.sh
+sudo bash iMagic.sh
 ```
 
 
