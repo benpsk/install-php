@@ -493,8 +493,9 @@ if [ "$DATABASE_SKIP" = "false" ]; then
 
 		sudo apt-get purge *mariadb-server* -y
 		sudo apt-get autoremove -y
+	fi
 
-	elif dpkg -l | grep -q "mysql"; then
+	if dpkg -l | grep -q "mysql"; then
 		sudo systemctl stop mysql
 
 		db_backup
