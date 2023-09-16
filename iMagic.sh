@@ -162,8 +162,10 @@ php="php$php_version"
 if [ "$PHP_SKIP" = "false" ]; then
 	echo "Installing... $php"
 
-	## stop nginx
-	stop_nginx
+	## stop nginx (php will install apache2 by default)
+	if ! dpkg -l | grep -q "apache2"; then
+		stop_nginx
+	fi
 
 	## install php (ondrje php) ### add ondrje ppa
 	sudo apt-get install software-properties-common -y
