@@ -122,10 +122,11 @@ ask_install_composer() {
 		- y (default)
 		- Enter 0 (zero) to skip.
 		- Enter 'q' to quit.
-        ${RESET}
+        
 	EOM
     )"
 
+    echo -e "Install Composer? (y/n) : ${RESET}"
     echo -e "${YELLOW}Install Composer? (y/n) : ${RESET}"
     echo -e "${RED}Install Composer? (y/n) : ${RESET}"
     echo -e "${GREEN}Install Composer? (y/n) : ${RESET}"
