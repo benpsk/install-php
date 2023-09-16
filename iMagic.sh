@@ -154,9 +154,6 @@ php="php$php_version"
 if [ "$PHP_SKIP" = "false" ]; then
 	echo "Installing... $php"
 
-	### check for apache2
-	backup_and_remove_apache2
-
 	## stop nginx
 	stop_nginx
 
