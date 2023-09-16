@@ -111,7 +111,9 @@ start_nginx() {
 }
 
 exit_message() {
+	echo
 	echo -e "${ON_GREEN}Goodbye, See you next time!${RESET}"
+	echo
 }
 
 skip_message() {
@@ -119,7 +121,9 @@ skip_message() {
 }
 
 install_message() {
+	echo
 	echo -e "${ON_CYAN}Installing... $1${RESET}"	
+	echo
 }
 
 ##
@@ -343,7 +347,7 @@ done
 
 if [ "$composer" = "y" ] && [ "$COMPOSER_SKIP" = "false" ]; then
 	# remove existing composer
-	ehco "Cleaning Composer..."
+	echo "Cleaning Composer..."
 	sudo apt-get remove composer -y
 
 	install_message "Composer"
