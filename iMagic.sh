@@ -183,7 +183,7 @@ while true; do
 	fi
 
 	if [ "$php_version" = "0" ]; then
-		echo -e "${YELLOW}Skipping... PHP installation!${RESET}"
+		echo -e "${ON_YELLOW}Skipping... PHP installation!${RESET}"
 		PHP_SKIP=true
 		break
 	fi
