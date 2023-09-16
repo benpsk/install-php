@@ -421,7 +421,7 @@ ask_install_web_server() {
 			${RESET}
 		EOM
 	)"
-	echo -e "${YELLOW}Install web server? : ${RESET}"
+	echo -ne "${YELLOW}Please select web server? : ${RESET}"
 	read web_server
 	echo
 }
