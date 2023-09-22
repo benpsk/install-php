@@ -1,5 +1,9 @@
-# PHP Stack Server Deployment Script
+# PHP Tech Stack Installation
 
+Effortlessly set up and launch your PHP tech stack on <b>UBUNTU</b> with a single command.
+
+> <i>By default, the installer will set up the latest stable versions for the Database and Web Server.</i>
+ 
 ### Available Services
 
 - PHP 
@@ -19,12 +23,12 @@
 ### All you need to do is - 
 
 1. Download the iMagic.sh.
-```sh
+```shell
 wget https://raw.githubusercontent.com/benpsk/install-php/main/iMagic.sh
 ```
 
 2. Run the script.
-```sh
+```shell
 sudo bash iMagic.sh
 ```
 
