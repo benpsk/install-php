@@ -22,14 +22,10 @@ Effortlessly set up and launch your PHP tech stack on <b>UBUNTU</b> with a singl
 
 ### All you need to do is - 
 
-1. Download the iMagic.sh.
+Run one of the below commands.
 ```shell
-wget https://raw.githubusercontent.com/benpsk/install-php/main/iMagic.sh
+wget https://raw.githubusercontent.com/benpsk/install-php/main/iMagic.sh && sudo bash iMagic.sh
 ```
-
-2. Run the script.
 ```shell
-sudo bash iMagic.sh
+curl -O https://raw.githubusercontent.com/benpsk/install-php/main/iMagic.sh && sudo bash iMagic.sh
 ```
-
-
