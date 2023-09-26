@@ -26,6 +26,7 @@ Run one of the below commands.
 ```shell
 wget https://raw.githubusercontent.com/benpsk/install-php/main/iMagic.sh && sudo bash iMagic.sh
 ```
+
 ```shell
 curl -O https://raw.githubusercontent.com/benpsk/install-php/main/iMagic.sh && sudo bash iMagic.sh
 ```
