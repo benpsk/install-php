@@ -12,3 +12,7 @@ if systemctl is-active --quiet apache2; then
 else
     echo "Apache2 is not running."
 fi
+
+if ! systemctl is-active --quiet apache2; then
+	systemctl start apache2
+fi
