@@ -13,24 +13,14 @@
 RESET='\033[0m'
 
 ## Regular Colors
-BLACK='\033[0;30m'
-RED='\033[0;31m'  
+RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[0;33m'
-BLUE='\033[0;34m'  
-PURPLE='\033[0;35m'
-CYAN='\033[0;36m'  
-WHITE='\033[0;37m' 
 
 ## Background
-ON_BLACK='\033[40m'
-ON_RED='\033[41m'  
 ON_GREEN='\033[42m'
 ON_YELLOW='\033[43m'
-ON_BLUE='\033[44m'  
-ON_PURPLE='\033[45m'
-ON_CYAN='\033[46m'  
-ON_WHITE='\033[47m' 
+ON_CYAN='\033[46m'
 
 ##
 ##
@@ -60,7 +50,7 @@ backup_and_remove_apache2() {
 			cat <<-EOM
 				${ON_YELLOW}
 
-				Backup existing apache2 config to 			=> /etc/apache2_backup_$DATE.tar.gz
+				Backup existing apache2 config to    => /etc/apache2_backup_$DATE.tar.gz
 
 				${RESET}
 			EOM
@@ -86,7 +76,7 @@ backup_and_remove_nginx() {
 			cat <<-EOM
 				${ON_YELLOW}
 
-				Backup existing nginx config to 			=> /etc/nginx_backup_$DATE.tar.gz
+				Backup existing nginx config to    => /etc/nginx_backup_$DATE.tar.gz
 
 				${RESET}
 			EOM
@@ -122,7 +112,7 @@ stop_apache2() {
 }
 
 start_nginx() {
-	if dpkg -l | grep -q "nginx"; then 
+	if dpkg -l | grep -q "nginx"; then
 		sudo systemctl start nginx
 		sudo systemctl enable nginx
 	fi
@@ -140,7 +130,7 @@ skip_message() {
 
 install_message() {
 	echo
-	echo -e "${ON_CYAN}Installing... $1${RESET}"	
+	echo -e "${ON_CYAN}Installing... $1${RESET}"
 	echo
 }
 
@@ -181,7 +171,7 @@ ask_php_version() {
 			${GREEN}
 
 
-	
+
 			***********Disclaimer**********
 
 			The existing PHP will be overwritten by the new PHP!
@@ -201,7 +191,7 @@ ask_php_version() {
 			${RESET} 
 		EOM
 	)"
-	echo -ne "${YELLOW}Please select PHP Version: ${RESET}" 
+	echo -ne "${YELLOW}Please select PHP Version: ${RESET}"
 	read php_version
 	echo
 }
@@ -232,13 +222,13 @@ while true; do
 		break
 	else
 		echo -e "$(
-			cat <<-EOM 
- 			${RED}
+			cat <<-EOM
+				    ${RED}
 
-			***********************************
- 
-			Please choose the given prefix number or the given PHP Version
-			${REST}
+							***********************************
+				 
+							Please choose the given prefix number or the given PHP Version
+							${REST}
 			EOM
 		)"
 	fi
@@ -603,9 +593,9 @@ if [ "$DATABASE_SKIP" = "false" ]; then
 		echo -e "$(
 			cat <<-EOM
 				${ON_YELLOW}
-				
-				Backup old mysql data to 		=> /var/lib/mysql_backup_$DATE.tar.gz
-				Backup old mysql config to 		=> /etc/mysql_backup_$DATE.tar.gz
+
+				Backup old mysql data to     => /var/lib/mysql_backup_$DATE.tar.gz
+				Backup old mysql config to   => /etc/mysql_backup_$DATE.tar.gz
 
 				${RESET}
 			EOM
