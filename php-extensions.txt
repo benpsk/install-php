@@ -1,0 +1,19 @@
+# moodle extension requirements
+
+php8.1-opcache
+php8.1-mysql
+php8.1-common [iconv, tokenizer, ctype, fileinfo, exif]
+php8.1-mbstring
+php8.1-curl
+php8.1-soap
+php8.1-zip
+php8.1-gd
+php8.1-xml [simplexml, dom, xmlreader]
+php8.1-intl
+php8.1-fpm [json, ]
+php8.1-imagick
+
+not found - zlib, spl, pcre, hash, sodium
+
+
+# laravel project extension requirements
