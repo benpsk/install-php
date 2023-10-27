@@ -227,7 +227,7 @@ while true; do
 
 							***********************************
 				 
-							Please choose the given prefix number or the given PHP Version
+							Please choose the given prefix number only!
 							${REST}
 			EOM
 		)"
@@ -744,7 +744,7 @@ while true; do
 
 							***********************************
 				 
-							Please choose the given prefix number or the given Nodejs Version
+							Please choose the given prefix number only!
 							${REST}
 			EOM
 		)"
