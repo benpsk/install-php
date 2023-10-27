@@ -660,3 +660,118 @@ fi
 ##
 ##
 ##
+
+##
+##
+##
+##
+##
+## *************** START NODEJS SECTION ****************
+##
+##
+##
+
+declare -A NODEJS_VERSIONS
+
+NODEJS_VERSIONS["1"]="21"
+NODEJS_VERSIONS["2"]="20"
+NODEJS_VERSIONS["3"]="19"
+NODEJS_VERSIONS["4"]="18"
+NODEJS_VERSIONS["5"]="16"
+
+NODEJS_SKIP=false
+
+ask_nodejs_version() {
+
+	echo -e "$(
+		cat <<-EOM
+			${GREEN}
+
+
+
+			***********Disclaimer**********
+
+			The existing Nodejs will be overwritten by the new Nodejs!
+
+			*******************************
+
+			Available Nodejs Versions:
+
+			1. Node 21 (default)
+			2. Node 20
+			3. Node 19
+			4. Node 18
+			5. Node 16
+
+			- Enter 0 (zero) to skip.
+			- Enter 'q' to quit.
+			${RESET} 
+		EOM
+	)"
+	echo -ne "${YELLOW}Please select Nodejs Version: ${RESET}"
+	read nodejs_version 
+	echo
+}
+
+while true; do
+	ask_nodejs_version
+
+	nodejs_version=$(echo "$nodejs_version" | tr "[:upper:]" "[:lower:]")
+
+	if [ "$nodejs_version" = "q" ]; then
+		exit_message
+		exit 0
+	fi
+
+	if [ "$nodejs_version" = "0" ]; then
+		skip_message "Node"
+		NODEJS_SKIP=true
+		break
+	fi
+
+	if [ -z "$nodejs_version" ]; then
+		nodejs_version="21"
+	fi
+
+	# Check if the input is equal to one of the array keys
+	if [[ -n "${NODEJS_VERSIONS[$nodejs_version]}" ]]; then
+		nodejs_version="${NODEJS_VERSIONS[$nodejs_version]}"
+		break
+	else
+		echo -e "$(
+			cat <<-EOM
+				    ${RED}
+
+							***********************************
+				 
+							Please choose the given prefix number or the given Nodejs Version
+							${REST}
+			EOM
+		)"
+	fi
+done
+
+if [ "$NODEJS_SKIP" = "false" ]; then
+
+	## ubuntu 18.x only support node 16.
+	ubuntu_version=$(lsb_release -sr)
+	ubuntu_version_no_dot="${ubuntu_version%%.*}" 
+	if [[ "$ubuntu_version_no_dot" -le "18" ]]; then
+		nodejs_version="16"
+	fi
+
+	install_message "Node $nodejs_version"
+	sudo apt-get update && sudo apt-get install -y ca-certificates curl gnupg
+	curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
+	echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_"$nodejs_version".x nodistro main" | sudo tee /etc/apt/sources.list.d/nodesource.list
+	sudo apt-get update && sudo apt-get install nodejs -y
+fi
+##
+##
+##
+## *************** END NODEJS SECTION ****************
+##
+##
+##
+##
+##
