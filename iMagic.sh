@@ -191,7 +191,7 @@ ask_php_version() {
 			${RESET} 
 		EOM
 	)"
-	echo -ne "${YELLOW}Please select PHP Version: ${RESET}"
+	echo -ne "${YELLOW}Select PHP version (enter the number): ${RESET}"
 	read php_version
 	echo
 }
@@ -411,7 +411,7 @@ ask_install_web_server() {
 			${RESET}
 		EOM
 	)"
-	echo -ne "${YELLOW}Please select web server? : ${RESET}"
+	echo -ne "${YELLOW}Select web server (enter the number) : ${RESET}"
 	read web_server
 	echo
 }
@@ -543,7 +543,7 @@ ask_install_database() {
 			${RED}
 		EOM
 	)"
-	echo -ne "${YELLOW}Install database ?: ${RESET}"
+	echo -ne "${YELLOW}Select Database (enter the number) ?: ${RESET}"
 	read database
 	echo
 }
@@ -708,7 +708,7 @@ ask_nodejs_version() {
 			${RESET} 
 		EOM
 	)"
-	echo -ne "${YELLOW}Please select Nodejs Version: ${RESET}"
+	echo -ne "${YELLOW}Select Node.js version (enter the number): ${RESET}"
 	read nodejs_version 
 	echo
 }
