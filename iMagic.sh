@@ -803,7 +803,7 @@ ask_install_supervisor() {
 
 			*******************************
 
-			- y (default)
+			- n (default)
 			- Enter 0 (zero) to skip.
 			- Enter 'q' to quit.
 			${RESET}
@@ -831,6 +831,7 @@ fi
 
 if [ -z "$supervisor" ]; then
 	supervisor="n"
+	skip_message "Supervisor"
 fi
 if [ "$supervisor" = "y" ] && [ "$SUPERVISOR_SKIP" = "false" ]; then
 	sudo apt-get install supervisor
