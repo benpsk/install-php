@@ -24,6 +24,7 @@ Effortlessly set up and launch your PHP tech stack on <b>UBUNTU</b> with a singl
   - v20
   - v18
   - v16
+- Supervisor
 
 ### All you need to do is - 
 
