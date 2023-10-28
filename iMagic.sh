@@ -775,3 +775,73 @@ fi
 ##
 ##
 ##
+
+
+##
+##
+##
+##
+##
+## *************** START SUPERVISOR SECTION ****************
+##
+##
+##
+
+SUPERVISOR_SKIP=true
+
+ask_install_supervisor() {
+
+	echo -e "$(
+		cat <<-EOM
+			${GREEN}
+
+
+
+			***********Disclaimer**********
+
+			The existing supervisor will be overwritten by the new supervisor!
+
+			*******************************
+
+			- y (default)
+			- Enter 0 (zero) to skip.
+			- Enter 'q' to quit.
+			${RESET}
+		EOM
+	)"
+	echo -ne "${YELLOW}Install Supervisor? (y/n) : ${RESET}"
+	read supervisor 
+	echo
+}
+
+ask_install_supervisor
+
+supervisor=$(echo "$supervisor" | tr '[:upper:]' '[:lower:]')
+
+if [ "$supervisor" = "q" ]; then
+	exit_message
+	exit 0
+fi
+
+if [ "$supervisor" = "0" ]; then
+	skip_message "Supervisor"
+	SUPERVISOR_SKIP=true
+	break
+fi
+
+if [ -z "$supervisor" ]; then
+	supervisor="n"
+fi
+if [ "$supervisor" = "y" ] && [ "$SUPERVISOR_SKIP" = "false" ]; then
+	sudo apt-get install supervisor
+fi
+
+##
+##
+##
+## *************** END COMPOSER SECTION ****************
+##
+##
+##
+##
+##
