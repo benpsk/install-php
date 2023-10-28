@@ -730,7 +730,7 @@ while true; do
 	fi
 
 	if [ -z "$nodejs_version" ]; then
-		nodejs_version="21"
+		nodejs_version="1"
 	fi
 
 	# Check if the input is equal to one of the array keys
