@@ -787,7 +787,7 @@ fi
 ##
 ##
 
-SUPERVISOR_SKIP=true
+SUPERVISOR_SKIP=false
 
 ask_install_supervisor() {
 
