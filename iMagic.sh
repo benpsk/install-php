@@ -826,13 +826,13 @@ fi
 if [ "$supervisor" = "0" ]; then
 	skip_message "Supervisor"
 	SUPERVISOR_SKIP=true
-	break
 fi
 
 if [ -z "$supervisor" ]; then
 	supervisor="n"
 	skip_message "Supervisor"
 fi
+
 if [ "$supervisor" = "y" ] && [ "$SUPERVISOR_SKIP" = "false" ]; then
 	sudo apt-get install supervisor
 fi
