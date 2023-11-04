@@ -253,7 +253,7 @@ if [ "$PHP_SKIP" = "false" ]; then
 	sudo apt-get install -y "$php"
 
 	### install php modules (Laravel && Moodle)
-	sudo apt-get install -y "$php"-mysql "$php"-mbstring "$php"-exif "$php"-bcmath "$php"-gd "$php"-zip "$php"-dom "$php"-curl "$php"-common "$php"-soap "$php"-xml "$php"-intl "$php"-imagick
+	sudo apt-get install -y "$php"-mysql "$php"-pgsql "$php"-sqlite3 "$php"-mbstring "$php"-exif "$php"-bcmath "$php"-gd "$php"-zip "$php"-dom "$php"-curl "$php"-common "$php"-soap "$php"-xml "$php"-intl "$php"-imagick
 
 	### install php-fpm by default
 	sudo apt-get install -y "$php"-fpm
