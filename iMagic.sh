@@ -137,7 +137,7 @@ install_message() {
 welcome_message() {
 	echo -e "$(
 		cat <<-EOM
-			${GREEN}
+			${ON_GREEN}
 
 			***********************************
 
@@ -149,13 +149,14 @@ welcome_message() {
 		EOM
 	)"
 	echo -ne "${YELLOW}Press any key to start! : ${RESET}"
+	read begin
 	echo
 }
 
 goodbye_message() {
 	echo -e "$(
 		cat <<-EOM
-			${GREEN}
+			${ON_GREEN}
 
 			***********************************
 
