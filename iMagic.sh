@@ -146,8 +146,10 @@ welcome_message() {
 			***********************************
 
 			${RESET}
+
 		EOM
 	)"
+	echo
 	echo -ne "${YELLOW}Press any key to start! : ${RESET}"
 	read begin
 	echo
