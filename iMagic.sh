@@ -134,6 +134,37 @@ install_message() {
 	echo
 }
 
+welcome_message() {
+	echo -e "$(
+		cat <<-EOM
+			${GREEN}
+
+			***********************************
+
+			Welcome to iMagic installer!
+
+			***********************************
+
+			${RESET}
+		EOM
+	)"
+}
+
+goodbye_message() {
+	echo -e "$(
+		cat <<-EOM
+			${GREEN}
+
+			***********************************
+
+			Thank you for using iMagic installer!
+
+			***********************************
+
+			${RESET}
+		EOM
+	)"
+}
 ##
 ##
 ##
@@ -153,6 +184,8 @@ install_message() {
 ##
 ##
 ##
+
+welcome_message
 
 declare -A PHP_VERSIONS
 
@@ -846,3 +879,4 @@ fi
 ##
 ##
 ##
+goodbye_message
