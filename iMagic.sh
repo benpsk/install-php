@@ -148,6 +148,8 @@ welcome_message() {
 			${RESET}
 		EOM
 	)"
+	echo -ne "${YELLOW}Press any key to start! : ${RESET}"
+	echo
 }
 
 goodbye_message() {
