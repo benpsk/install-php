@@ -7,6 +7,7 @@ Effortlessly set up and launch your PHP tech stack on <b>UBUNTU</b> with a singl
 ### Available Services
 
 - PHP 
+  - v8.3
   - v8.2
   - v8.1
   - v8.0
