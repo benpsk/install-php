@@ -195,10 +195,11 @@ welcome_message
 declare -A PHP_VERSIONS
 
 PHP_VERSIONS["1"]="8.2"
-PHP_VERSIONS["2"]="8.1"
-PHP_VERSIONS["3"]="8.0"
-PHP_VERSIONS["4"]="7.4"
-PHP_VERSIONS["5"]="7.2"
+PHP_VERSIONS["2"]="8.2"
+PHP_VERSIONS["3"]="8.1"
+PHP_VERSIONS["4"]="8.0"
+PHP_VERSIONS["5"]="7.4"
+PHP_VERSIONS["6"]="7.2"
 
 PHP_SKIP=false
 
@@ -218,11 +219,12 @@ ask_php_version() {
 
 			Available PHP Versions:
 
-			1. PHP 8.2 (default)
-			2. PHP 8.1
-			3. PHP 8.0
-			4. PHP 7.4
-			5. PHP 7.2
+			1. PHP 8.3 (default)
+			2. PHP 8.2
+			3. PHP 8.1
+			4. PHP 8.0
+			5. PHP 7.4
+			6. PHP 7.2
 
 			- Enter 0 (zero) to skip.
 			- Enter 'q' to quit.
