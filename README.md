@@ -31,10 +31,10 @@ Effortlessly set up and launch your PHP tech stack on <b>UBUNTU</b> with a singl
 
 Run one of the below commands.
 ```shell
-sudo rm -f iMagic.sh* 2>/dev/null && wget https://raw.githubusercontent.com/benpsk/install-php/main/iMagic.sh && sudo bash iMagic.sh
+wget https://raw.githubusercontent.com/benpsk/install-php/main/iMagic.sh && sudo bash iMagic.sh && sudo rm -f iMagic.sh* 2>/dev/null
 
 ```
 
 ```shell
-sudo rm -f iMagic.sh* 2>/dev/null && curl -O https://raw.githubusercontent.com/benpsk/install-php/main/iMagic.sh && sudo bash iMagic.sh
+curl -O https://raw.githubusercontent.com/benpsk/install-php/main/iMagic.sh && sudo bash iMagic.sh && sudo rm -f iMagic.sh* 2>/dev/null
 ```
