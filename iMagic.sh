@@ -811,10 +811,8 @@ if [ "$NODEJS_SKIP" = "false" ]; then
 	fi
 
 	install_message "Node $nodejs_version"
-	sudo apt-get update && sudo apt-get install -y ca-certificates curl gnupg
-	curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
-	echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_"$nodejs_version".x nodistro main" | sudo tee /etc/apt/sources.list.d/nodesource.list
-	sudo apt-get update && sudo apt-get install nodejs -y
+	curl -fsSL https://deb.nodesource.com/setup_$nodejs_version.x | sudo -E bash - &&\
+	sudo apt-get install -y nodejs
 fi
 ##
 ##
