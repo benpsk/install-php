@@ -194,7 +194,7 @@ welcome_message
 
 declare -A PHP_VERSIONS
 
-PHP_VERSIONS["1"]="8.2"
+PHP_VERSIONS["1"]="8.3"
 PHP_VERSIONS["2"]="8.2"
 PHP_VERSIONS["3"]="8.1"
 PHP_VERSIONS["4"]="8.0"
@@ -404,11 +404,10 @@ if [ "$composer" = "y" ] && [ "$COMPOSER_SKIP" = "false" ]; then
 	php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
 	ACTUAL_CHECKSUM="$(php -r "echo hash_file('sha384', 'composer-setup.php');")"
 
-	if [ "$EXPECTED_CHECKSUM" != "$ACTUAL_CHECKSUM" ]
-	then
- 		>&2 echo 'ERROR: Invalid installer checksum'
-  	  	rm composer-setup.php
-   	 	exit 1
+	if [ "$EXPECTED_CHECKSUM" != "$ACTUAL_CHECKSUM" ]; then
+		>&2 echo 'ERROR: Invalid installer checksum'
+		rm composer-setup.php
+		exit 1
 	fi
 
 	php composer-setup.php --quiet
@@ -759,7 +758,7 @@ ask_nodejs_version() {
 		EOM
 	)"
 	echo -ne "${YELLOW}Select Node.js version (enter the number): ${RESET}"
-	read nodejs_version 
+	read nodejs_version
 	echo
 }
 
@@ -805,7 +804,7 @@ if [ "$NODEJS_SKIP" = "false" ]; then
 
 	## ubuntu 18.x only support node 16.
 	ubuntu_version=$(lsb_release -sr)
-	ubuntu_version_no_dot="${ubuntu_version%%.*}" 
+	ubuntu_version_no_dot="${ubuntu_version%%.*}"
 	if [[ "$ubuntu_version_no_dot" -le "18" ]]; then
 		nodejs_version="16"
 	fi
@@ -813,8 +812,8 @@ if [ "$NODEJS_SKIP" = "false" ]; then
 	install_message "Node $nodejs_version"
 	sudo apt remove nodejs -y
 	sudo apt autoremove -y
-	curl -fsSL https://deb.nodesource.com/setup_"$nodejs_version".x | sudo -E bash - &&\
-	sudo apt-get install -y nodejs
+	curl -fsSL https://deb.nodesource.com/setup_"$nodejs_version".x | sudo -E bash - &&
+		sudo apt-get install -y nodejs
 fi
 ##
 ##
@@ -825,7 +824,6 @@ fi
 ##
 ##
 ##
-
 
 ##
 ##
@@ -860,7 +858,7 @@ ask_install_supervisor() {
 		EOM
 	)"
 	echo -ne "${YELLOW}Install Supervisor? (y/n) : ${RESET}"
-	read supervisor 
+	read supervisor
 	echo
 }
 
@@ -897,3 +895,4 @@ fi
 ##
 ##
 goodbye_message
+
