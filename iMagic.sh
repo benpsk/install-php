@@ -812,8 +812,11 @@ if [ "$NODEJS_SKIP" = "false" ]; then
 	install_message "Node $nodejs_version"
 	sudo apt remove nodejs -y
 	sudo apt autoremove -y
-	curl -fsSL https://deb.nodesource.com/setup_"$nodejs_version".x | sudo -E bash - &&
-		sudo apt-get install -y nodejs
+	# installs nvm (Node Version Manager)
+	curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+	nvm install "$nodejs_version"
+	node -v 
+	npm -v
 fi
 ##
 ##
