@@ -20,7 +20,7 @@ Effortlessly set up and launch your PHP tech stack on <b>UBUNTU</b> with a singl
 - Web Server 
   - Nginx 
   - Apache2
-- Node
+- Node (with nvm node version manager)
   - v21
   - v20
   - v18
