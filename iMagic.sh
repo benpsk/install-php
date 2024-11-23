@@ -722,11 +722,13 @@ fi
 
 declare -A NODEJS_VERSIONS
 
-NODEJS_VERSIONS["1"]="21"
-NODEJS_VERSIONS["2"]="20"
-NODEJS_VERSIONS["3"]="19"
-NODEJS_VERSIONS["4"]="18"
-NODEJS_VERSIONS["5"]="16"
+NODEJS_VERSIONS["1"]="23"
+NODEJS_VERSIONS["2"]="22"
+NODEJS_VERSIONS["3"]="21"
+NODEJS_VERSIONS["4"]="20"
+NODEJS_VERSIONS["5"]="19"
+NODEJS_VERSIONS["6"]="18"
+NODEJS_VERSIONS["7"]="16"
 
 NODEJS_SKIP=false
 
@@ -746,11 +748,13 @@ ask_nodejs_version() {
 
 			Available Nodejs Versions:
 
-			1. Node 21 (default)
-			2. Node 20
-			3. Node 19
-			4. Node 18
-			5. Node 16
+			1. Node 23 (default)
+			2. Node 22
+			3. Node 21
+			4. Node 20
+			5. Node 19
+			6. Node 18
+			7. Node 16
 
 			- Enter 0 (zero) to skip.
 			- Enter 'q' to quit.

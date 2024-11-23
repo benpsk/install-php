@@ -7,12 +7,12 @@ Effortlessly set up and launch your PHP tech stack on <b>UBUNTU</b> with a singl
 ### Available Services
 
 - PHP 
+  - v8.4
   - v8.3
   - v8.2
   - v8.1
   - v8.0
   - v7.4
-  - v7.2
 - Composer
 - Database 
   - MySQL 
@@ -21,6 +21,8 @@ Effortlessly set up and launch your PHP tech stack on <b>UBUNTU</b> with a singl
   - Nginx 
   - Apache2
 - Node (with nvm node version manager)
+  - v23
+  - v22
   - v21
   - v20
   - v18
